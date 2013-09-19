@@ -1,17 +1,17 @@
-// Programming 2D Games
-// Copyright (c) 2011 by: 
-// Charles Kelly
-// Move spaceship with arrow keys.
-// Chapter 5 ScribbleVania.cpp v1.0
-// This class is the core of the game
-
 #include "ScribbleVania.h"
-
+#include "GameObject.h"
+#include "TestPlanetObj.h"
+#include "TestBackground.h"
+#include "Room.h"
 //=============================================================================
 // Constructor
 //=============================================================================
 ScribbleVania::ScribbleVania()
-{}
+{
+	eo = new TestPlanetObj();
+	background = new TestBackGround();
+	player = new Player();
+}
 
 //=============================================================================
 // Destructor
@@ -19,6 +19,8 @@ ScribbleVania::ScribbleVania()
 ScribbleVania::~ScribbleVania()
 {
     releaseAll();           // call onLostDevice() for every graphics item
+	SAFE_DELETE(eo);
+	SAFE_DELETE(player);
 }
 
 //=============================================================================
@@ -29,38 +31,9 @@ void ScribbleVania::initialize(HWND hwnd)
 {
     Game::initialize(hwnd); // throws GameError
 
-    // nebula texture
-    if (!nebulaTexture.initialize(graphics,NEBULA_IMAGE))
-        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing nebula texture"));
-
-    // planet texture
-    if (!planetTexture.initialize(graphics,PLANET_IMAGE))
-        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing planet texture"));
-
-    // spaceship texture
-    if (!shipTexture.initialize(graphics,SHIP_IMAGE))
-        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing ship texture"));
-
-    // nebula
-    if (!nebula.initialize(graphics,0,0,0,&nebulaTexture))
-        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing nebula"));
-
-    // planet
-    if (!planet.initialize(graphics,0,0,0,&planetTexture))
-        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing planet"));
-    // place planet in center of screen
-    planet.setX(GAME_WIDTH*0.5f  - planet.getWidth()*0.5f);
-    planet.setY(GAME_HEIGHT*0.5f - planet.getHeight()*0.5f);
-
-    // ship
-    if (!ship.initialize(graphics,SHIP_WIDTH, SHIP_HEIGHT, SHIP_COLS, &shipTexture))
-        throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing ship"));
-    ship.setX(GAME_WIDTH/4);                    // start above and left of planet
-    ship.setY(GAME_HEIGHT/4);
-    ship.setFrames(SHIP_START_FRAME, SHIP_END_FRAME);   // animation frames
-    ship.setCurrentFrame(SHIP_START_FRAME);     // starting frame
-    ship.setFrameDelay(SHIP_ANIMATION_DELAY);
-
+	background->Initialize(this);
+	eo->Initialize(this);
+	player->Initialize(this);
     return;
 }
 
@@ -69,32 +42,9 @@ void ScribbleVania::initialize(HWND hwnd)
 //=============================================================================
 void ScribbleVania::update()
 {
-    if(input->isKeyDown(SHIP_RIGHT_KEY))            // if move right
-    {
-        ship.setX(ship.getX() + frameTime * SHIP_SPEED);
-        if (ship.getX() > GAME_WIDTH)               // if off screen right
-            ship.setX((float)-ship.getWidth());     // position off screen left
-    }
-    if(input->isKeyDown(SHIP_LEFT_KEY))             // if move left
-    {
-        ship.setX(ship.getX() - frameTime * SHIP_SPEED);
-        if (ship.getX() < -ship.getWidth())         // if off screen left
-            ship.setX((float)GAME_WIDTH);           // position off screen right
-    }
-    if(input->isKeyDown(SHIP_UP_KEY))               // if move up
-    {
-        ship.setY(ship.getY() - frameTime * SHIP_SPEED);
-        if (ship.getY() < -ship.getHeight())        // if off screen top
-            ship.setY((float)GAME_HEIGHT);          // position off screen bottom
-    }
-    if(input->isKeyDown(SHIP_DOWN_KEY))             // if move down
-    {
-        ship.setY(ship.getY() + frameTime * SHIP_SPEED);
-        if (ship.getY() > GAME_HEIGHT)              // if off screen bottom
-            ship.setY((float)-ship.getHeight());    // position off screen top
-    }
-
-    ship.update(frameTime);
+	player->Update(frameTime);
+	eo->Update(frameTime);
+	background->Update(frameTime);
 }
 
 //=============================================================================
@@ -116,10 +66,10 @@ void ScribbleVania::render()
 {
     graphics->spriteBegin();                // begin drawing sprites
 
-    nebula.draw();                          // add the orion nebula to the scene
-    planet.draw();                          // add the planet to the scene
-    ship.draw();                            // add the spaceship to the scene
-
+	background->Draw();
+	eo->Draw();
+	player->Draw();
+	
     graphics->spriteEnd();                  // end drawing sprites
 }
 
@@ -129,10 +79,9 @@ void ScribbleVania::render()
 //=============================================================================
 void ScribbleVania::releaseAll()
 {
-    shipTexture.onLostDevice();
-    planetTexture.onLostDevice();
-    nebulaTexture.onLostDevice();
-
+	player->Shutdown();
+	background->Shutdown();
+	eo->Shutdown();
     Game::releaseAll();
     return;
 }
@@ -143,10 +92,9 @@ void ScribbleVania::releaseAll()
 //=============================================================================
 void ScribbleVania::resetAll()
 {
-    nebulaTexture.onResetDevice();
-    planetTexture.onResetDevice();
-    shipTexture.onResetDevice();
-
+	background->Reset();
+	player->Reset();
+	eo->Reset();
     Game::resetAll();
     return;
 }
