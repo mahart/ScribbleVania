@@ -3,6 +3,8 @@
 #include "TestPlanetObj.h"
 #include "TestBackground.h"
 #include "Room.h"
+#include "ObjectManager.h"
+
 //=============================================================================
 // Constructor
 //=============================================================================
@@ -11,6 +13,7 @@ ScribbleVania::ScribbleVania()
 	eo = new TestPlanetObj();
 	background = new TestBackGround();
 	player = new Player();
+	manager = new ObjectManager(this);
 }
 
 //=============================================================================
@@ -21,6 +24,7 @@ ScribbleVania::~ScribbleVania()
     releaseAll();           // call onLostDevice() for every graphics item
 	SAFE_DELETE(eo);
 	SAFE_DELETE(player);
+	SAFE_DELETE(manager);
 }
 
 //=============================================================================
@@ -42,8 +46,18 @@ void ScribbleVania::initialize(HWND hwnd)
 //=============================================================================
 void ScribbleVania::update()
 {
+	Position playerp;
+	playerp.x = player->getX();
+	playerp.y = player->getY();
+
 	player->Update(frameTime);
 	eo->Update(frameTime);
+	if(eo->GetCollidable()->Intersects(player->GetCollidable()))
+	{
+		player->SetX(playerp.x);
+		player->SetY(playerp.y);
+	}
+
 	background->Update(frameTime);
 }
 

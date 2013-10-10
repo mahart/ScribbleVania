@@ -2,17 +2,21 @@
 
 Player::Player() : GameObject()
 {
-	type = ObjectType::Player;
+	_type = ObjectType::Player;
+	_bound = new BoundingBox(0, this);
 }
 
 Player::Player(unsigned int id) : GameObject(id)
 {
-	type = ObjectType::Player;
+	_type = ObjectType::Player;
+	_bound = new BoundingBox(id,this);
 }
 
 Player::~Player()
 {
 	_game=NULL; 
+	 SAFE_DELETE(_bound);
+	_bound=NULL;
 }
 
 bool Player::Initialize(Game* game)
@@ -33,13 +37,20 @@ bool Player::Initialize(Game* game)
 			playerImage.setFrames(SHIP_START_FRAME, SHIP_END_FRAME);   // animation frames
 			playerImage.setCurrentFrame(SHIP_START_FRAME);     // starting frame
 			playerImage.setFrameDelay(SHIP_ANIMATION_DELAY);
+
+			if(!_bound->Initialize(game, this->GetWidth(), this->GetHeight()))
+			{
+				return false;
+			}
 	}
 	return true;
 }
 
 void Player::Shutdown()
 {
+	_bound->Shutdown();
 	playerTexture.onLostDevice();
+	
 }
 
 void Player::Update(float elapsedTime)
@@ -74,20 +85,42 @@ void Player::Update(float elapsedTime)
 	playerImage.setX(_position.x);
 	playerImage.setY(_position.y);
     playerImage.update(elapsedTime);
+	_bound->Update(elapsedTime);
 	input=NULL;
 }
 
 void Player::Draw(COLOR_ARGB color)
 {
+	_bound->Draw(color);
 	playerImage.draw(color);
 }
 
 void Player::Draw(SpriteData sd, COLOR_ARGB color)
 {
+	_bound->Draw(sd,color);
 	playerImage.draw(sd,color);
 }
 
 void Player::Reset()
 {
 	playerTexture.onResetDevice();
+	_bound->Reset();
+}
+
+int Player::GetWidth()
+{
+	return playerImage.getWidth();
+}
+
+int Player::GetHeight()
+{
+	return playerImage.getHeight();
+}
+
+Position Player::GetCenter()
+{
+	Position temp;
+	temp.x = playerImage.getCenterX();
+	temp.y = playerImage.getCenterY();
+	return temp;
 }

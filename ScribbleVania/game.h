@@ -3,8 +3,7 @@
 // Charles Kelly
 // Chapter 5 game.h v1.0
 
-#ifndef _GAME_H                 // Prevent multiple definitions if this 
-#define _GAME_H                 // file is included in more than one place
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
@@ -97,4 +96,3 @@ public:
     virtual void render() = 0;
 };
 
-#endif

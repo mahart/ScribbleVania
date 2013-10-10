@@ -1,10 +1,10 @@
-#ifndef _PLAYER_H
-#define _PLAYER_H
-
+#pragma once
+#define WIN32_LEAN_AND_MEAN
 #include "GameObject.h"
 #include "image.h"
 #include "TextureManager.h"
-#define WIN32_LEAN_AND_MEAN
+#include "ObjectManager.h"
+#include "BoundingBox.h"
 
 class Player : public  GameObject
 {
@@ -19,15 +19,17 @@ class Player : public  GameObject
 		void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE); // draw with SpriteData using color as filter
 		
 		void Update(float elapsedTime);
-
+		Position GetCenter();
 		//Startup and Shutdown
 		bool Initialize(Game* game);
 		void Shutdown();
 		void Reset();
+		int GetWidth();
+		int GetHeight();
+		void SetX(float x){_position.x = x;}
+		void SetY(float y){_position.y = y;}
 	protected:
 		Image playerImage;
 		TextureManager playerTexture;
 	private:
 };
-
-#endif

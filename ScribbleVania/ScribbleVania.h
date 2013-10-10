@@ -3,8 +3,7 @@
 // Charles Kelly
 // Chapter 5 ScribbleVania.h v1.0
 
-#ifndef _SCRIBBLE_VANIA_H             // Prevent multiple definitions if this 
-#define _SCRIBBLE_VANIA_H             // file is included in more than one place
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include "game.h"
@@ -12,13 +11,14 @@
 #include "image.h"
 #include "Player.h"
 #include "EnvironmentObject.h"
-
+#include "ObjectManager.h"
 //=============================================================================
 // This class is the core of the game
 //=============================================================================
 class ScribbleVania : public Game
 {
 private:
+	ObjectManager *manager;
     // game items
     TextureManager nebulaTexture;   // nebula texture
     TextureManager planetTexture;   // planet texture
@@ -45,4 +45,3 @@ public:
     void resetAll();
 };
 
-#endif

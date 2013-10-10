@@ -1,5 +1,4 @@
-#ifndef _ENVIRONMENT_OBJECT_H
-#define _ENVIRONMENT_OBJECT_H
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include "GameObject.h"
@@ -27,7 +26,9 @@ class EnvironmentObject : public  GameObject
 		virtual void Shutdown();
 
 		virtual void Reset();
-
+		virtual int GetWidth();
+		virtual int GetHeight();
+		virtual Position GetCenter();
 		//getter
 		bool IsStatic() {return _static;}
 
@@ -37,5 +38,3 @@ class EnvironmentObject : public  GameObject
 		TextureManager objectTexture;
 	private:
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _TEST_PLANET_OBJ_H
-#define _TEST_PLANET_OBJ_H
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include "EnvironmentObject.h"
@@ -13,7 +12,8 @@ class TestPlanetObj : public EnvironmentObject
 
 		bool Initialize(Game* game);
 		void Update(float elapsedTime);
+		void Draw(COLOR_ARGB color = graphicsNS::WHITE);
+		void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE);
 	protected:
 	private:
 };
-#endif

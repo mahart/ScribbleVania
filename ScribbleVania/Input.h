@@ -3,8 +3,7 @@
 // Charles Kelly
 // input.h v1.1
 
-#ifndef _INPUT_H                // Prevent multiple definitions if this 
-#define _INPUT_H                // file is included in more than one place
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 class Input;
@@ -398,5 +397,4 @@ public:
     void vibrateControllers(float frameTime);
 };
 
-#endif
 

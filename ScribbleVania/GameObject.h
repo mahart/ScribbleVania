@@ -1,9 +1,10 @@
-#ifndef _GAME_OBJECT_H
-#define _GAME_OBJECT_H
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include "constants.h"
 #include "game.h"
+#include "Collidable.h"
+#include "GameStructs.h"
 typedef enum class ObjectType
 {
 	Player = 0,
@@ -15,18 +16,14 @@ typedef enum class ObjectType
 	Other
 } ObjecType;
 
-struct Position
-{
-	float x;
-	float y;
-};
 
+//virtual class, used as an interface
 class GameObject
 {
 	public:
-		GameObject();
-		GameObject(unsigned int id);
-		virtual ~GameObject();
+		GameObject(){}
+		GameObject(unsigned int id){_id=id;}
+		virtual ~GameObject(){}
 		
 		//Draw Will change when the graphics component is replaced
 		virtual void Draw(COLOR_ARGB color = graphicsNS::WHITE) = 0;
@@ -42,18 +39,24 @@ class GameObject
 		virtual void Shutdown() = 0;
 
 		virtual void Reset() =0;
-
+		
 		//Getters
 		unsigned int ID() {return _id;}
-
-		//May not be used in final version
-		float LayerDepth;
-
+		virtual float getX() {return _position.x;}
+		virtual float getY() {return _position.y;}
+		virtual Position GetCenter()=0;
+		virtual float getDepth() {return _position.depth;}
+		virtual ObjectType getObjectType() {return _type;}
+		virtual Collidable* getBounds() {return _bound;}
+		virtual int GetWidth()=0;
+		virtual int GetHeight()=0;
+		virtual Collidable* GetCollidable(){return _bound;}
 	protected:
 		unsigned int _id;
 		Game* _game;
 		Position _position;
-		ObjectType type;
+		ObjectType _type;
+		Collidable* _bound;
 	private:
+
 };
-#endif

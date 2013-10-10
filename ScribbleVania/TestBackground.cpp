@@ -40,3 +40,6 @@ void TestBackGround::Update(float elapsedTime)
 	objectImage.setX(_position.x);
 	objectImage.setY(_position.y);
 }
+
+
+

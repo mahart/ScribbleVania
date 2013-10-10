@@ -2,9 +2,7 @@
 // Copyright (c) 2011 by: 
 // Charles Kelly
 // image.h v1.2
-
-#ifndef _IMAGE_H                // Prevent multiple definitions if this 
-#define _IMAGE_H                // file is included in more than one place
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include "TextureManager.h"
@@ -177,5 +175,4 @@ class Image
     virtual void update(float frameTime);
 };
 
-#endif
 

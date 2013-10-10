@@ -1,5 +1,4 @@
-#ifndef _ROOM_H
-#define _ROOM_H
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include "GameObject.h"
@@ -29,6 +28,6 @@ class Room : public GameObject
 		virtual void Reset() =0;
 	protected:
 		vector<EnvironmentObject *> envList;
+		EnvironmentObject * background;
 	private:
 };
-#endif

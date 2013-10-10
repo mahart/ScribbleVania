@@ -3,8 +3,7 @@
 // Charles Kelly
 // Chapter 5 graphics.h v1.0
 
-#ifndef _GRAPHICS_H             // Prevent multiple definitions if this 
-#define _GRAPHICS_H             // file is included in more than one place
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #ifdef _DEBUG
@@ -213,5 +212,4 @@ public:
     }
 };
 
-#endif
 

@@ -2,8 +2,7 @@
 // Copyright (c) 2011 by: 
 // Charles Kelly
 // Chapter 5 constants.h v1.0
-#ifndef _CONSTANTS_H            // Prevent multiple definitions if this 
-#define _CONSTANTS_H            // file is included in more than one place
+#pragma once
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
@@ -21,7 +20,7 @@
 #define SAFE_ON_LOST_DEVICE(ptr)    { if(ptr) { ptr->onLostDevice(); } }
 // Safely call onResetDevice
 #define SAFE_ON_RESET_DEVICE(ptr)   { if(ptr) { ptr->onResetDevice(); } }
-#define TRANSCOLOR  SETCOLOR_ARGB(0,255,0,255)  // transparent color (magenta)
+#define TRANSCOLOR  SETCOLOR_ARGB(255,255,0,255)  // transparent color (magenta)
 
 //-----------------------------------------------
 // KEYS
@@ -37,6 +36,8 @@
 const char NEBULA_IMAGE[] = "pictures\\orion.jpg";  // photo source NASA/courtesy of nasaimages.org 
 const char PLANET_IMAGE[] = "pictures\\planet.png"; // picture of planet
 const char SHIP_IMAGE[]   = "pictures\\ship.png";   // spaceship
+const char BOX_IMAGE[] = "pictures\\BoundingBox.png";//Bounding box 
+const char CIRCLE_IMAGE[] = "pictures\\BoundingCircle.png";
 
 // window
 const char CLASS_NAME[] = "ScribbleVania";
@@ -73,4 +74,3 @@ const UCHAR SHIP_RIGHT_KEY   = VK_D;    // right arrow
 const UCHAR SHIP_UP_KEY      = VK_W;       // up arrow
 const UCHAR SHIP_DOWN_KEY    = VK_S;     // down arrow
 
-#endif

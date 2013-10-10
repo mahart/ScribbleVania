@@ -2,12 +2,12 @@
 
 EnvironmentObject::EnvironmentObject() : GameObject()
 {
-	type = ObjectType::EnvironmentObject;
+	_type = ObjectType::EnvironmentObject;
 }
 
 EnvironmentObject::EnvironmentObject(unsigned int ID) : GameObject(ID)
 {
-	type = ObjectType::EnvironmentObject;
+	_type = ObjectType::EnvironmentObject;
 }
 
 EnvironmentObject::~EnvironmentObject()
@@ -41,4 +41,22 @@ void EnvironmentObject::Draw(SpriteData sd, COLOR_ARGB color)
 void EnvironmentObject::Reset()
 {
 	objectTexture.onResetDevice();
+}
+
+int EnvironmentObject::GetHeight()
+{
+	return objectImage.getHeight();
+}
+
+int EnvironmentObject::GetWidth()
+{
+	return objectImage.getWidth();
+}
+
+Position EnvironmentObject::GetCenter()
+{
+	Position temp;
+	temp.x = objectImage.getCenterX();
+	temp.y = objectImage.getCenterY();
+	return temp;
 }
