@@ -2,11 +2,13 @@
 
 TestBackGround::TestBackGround() : EnvironmentObject()
 {
+	_position.depth = -1;
 	_static=true;
 }
 
 TestBackGround::TestBackGround(unsigned int ID) : EnvironmentObject(ID)
 {
+	_position.depth=-1;
 	_static=true;
 }
 

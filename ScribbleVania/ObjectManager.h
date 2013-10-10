@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "EnvironmentObject.h"
 #include "game.h"
-
+#include "DepthTreeNode.h"
 class Player;
 using namespace std;
 
@@ -22,7 +22,8 @@ class ObjectManager
 		void Draw();
 		void ShutDown();
 		void Reset();
-
+		unsigned int GetNextID();
+		GameObject* GetObjectByID(unsigned int ID);
 		//loadlevel
 		//switchlevel
 		
@@ -30,12 +31,14 @@ class ObjectManager
 		//loadroom
 		//switchroom
 		Game* _game;
+		DepthTreeNode* _drawTree; 
 		unsigned int _currentMaxID;
 		vector<unsigned int> _unusedIDs;
 		unordered_map<unsigned int,GameObject*> _objects;
 		Player* _player;
 		vector<EnvironmentObject*> _environment;
-		unsigned int GetNextID();
+		void Draw(DepthTreeNode*node);
+		void Draw(vector<unsigned int> objects);
 	private:
 		
 };

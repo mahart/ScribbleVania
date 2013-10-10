@@ -2,12 +2,14 @@
 
 Player::Player() : GameObject()
 {
+	_position.depth=0;
 	_type = ObjectType::Player;
 	_bound = new BoundingBox(0, this);
 }
 
 Player::Player(unsigned int id) : GameObject(id)
 {
+	_position.depth=0;
 	_type = ObjectType::Player;
 	_bound = new BoundingBox(id,this);
 }

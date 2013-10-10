@@ -18,16 +18,11 @@
 class ScribbleVania : public Game
 {
 private:
-	ObjectManager *manager;
+	ObjectManager *_manager;
     // game items
-    TextureManager nebulaTexture;   // nebula texture
-    TextureManager planetTexture;   // planet texture
-    TextureManager shipTexture;     // ship texture
-    Image   nebula;                 // nebula image
 	EnvironmentObject* background;
 	Player* player;
 	EnvironmentObject* eo;
-
 public:
     // Constructor
     ScribbleVania();

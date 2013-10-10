@@ -1,5 +1,26 @@
 #include "ObjectManager.h"
 #include "Player.h"
+#include "TestPlanetObj.h"
+#include "TestBackground.h"
+
+static void FakeFactory(unordered_map<unsigned int,GameObject*>* objects, ObjectManager* om, DepthTreeNode* drawTree)
+{
+	unsigned int id = om->GetNextID();
+	objects->insert(std::make_pair(id,new TestPlanetObj(id)));
+	if(drawTree == NULL)
+	{
+		drawTree = new DepthTreeNode(om->GetObjectByID(id)->getDepth(),id);
+	}
+	else
+	{
+		drawTree->AddToNode(om->GetObjectByID(id)->getDepth(), id);
+	}
+
+	id = om->GetNextID();
+	objects->insert(std::make_pair(id, new TestBackGround(id)));
+	drawTree->AddToNode(om->GetObjectByID(id)->getDepth(), id);
+
+}
 
 ObjectManager::ObjectManager()
 {
@@ -12,10 +33,13 @@ ObjectManager::ObjectManager(Game* game)
 	unsigned int nextID = GetNextID();
 	_player = new Player(nextID);
 	_objects.insert(std::make_pair(nextID,_player));
+	_drawTree = new DepthTreeNode(_player->getDepth(), nextID);
+	FakeFactory(&_objects,this, _drawTree);
 }
 
 ObjectManager::~ObjectManager()
 {
+	this->ShutDown();
 	_game = NULL;
 	_player = NULL;
 }
@@ -42,10 +66,34 @@ void ObjectManager::Update(float elapsedTime)
 
 void ObjectManager::Draw()
 {
-	//for now draw all objects "randomly" will enforce painters algorithm later;
+	this->Draw(_drawTree);
+	/*//for now draw all objects "randomly" will enforce painters algorithm later;
 	for(auto itr = _objects.begin(); itr!=_objects.end(); itr++)
 	{
 		itr->second->Draw();
+	}*/
+}
+
+void ObjectManager::Draw(DepthTreeNode * node)
+{
+	if(node->back!=NULL)
+	{
+		Draw(node->back);
+	}
+
+	Draw(node->objectIDs);
+
+	if(node->front!=NULL)
+	{
+		Draw(node->front);
+	}
+}
+
+void ObjectManager::Draw(vector<unsigned int> objects)
+{
+	for(unsigned int i = 0; i < objects.size(); i++)
+	{
+		this->GetObjectByID(objects[i])->Draw();
 	}
 }
 
@@ -53,7 +101,8 @@ void ObjectManager::ShutDown()
 {
 	for(auto itr = _objects.begin(); itr!=_objects.end(); itr++)
 	{
-		itr->second->Shutdown();
+		if(itr->second!=NULL)
+			itr->second->Shutdown();
 	}
 }
 
@@ -80,4 +129,9 @@ unsigned int ObjectManager::GetNextID()
 	}
 
 	return id;
+}
+
+GameObject* ObjectManager::GetObjectByID(unsigned int ID)
+{
+	return _objects.at(ID);
 }

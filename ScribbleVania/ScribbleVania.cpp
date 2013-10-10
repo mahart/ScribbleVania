@@ -10,10 +10,10 @@
 //=============================================================================
 ScribbleVania::ScribbleVania()
 {
-	eo = new TestPlanetObj();
-	background = new TestBackGround();
-	player = new Player();
-	manager = new ObjectManager(this);
+	//eo = new TestPlanetObj();
+	//background = new TestBackGround();
+	//player = new Player();
+	_manager = new ObjectManager(this);
 }
 
 //=============================================================================
@@ -22,9 +22,10 @@ ScribbleVania::ScribbleVania()
 ScribbleVania::~ScribbleVania()
 {
     releaseAll();           // call onLostDevice() for every graphics item
-	SAFE_DELETE(eo);
-	SAFE_DELETE(player);
-	SAFE_DELETE(manager);
+	SAFE_DELETE(_manager);
+	//SAFE_DELETE(eo);
+	//SAFE_DELETE(player);
+	//SAFE_DELETE(manager);
 }
 
 //=============================================================================
@@ -34,10 +35,10 @@ ScribbleVania::~ScribbleVania()
 void ScribbleVania::initialize(HWND hwnd)
 {
     Game::initialize(hwnd); // throws GameError
-
-	background->Initialize(this);
-	eo->Initialize(this);
-	player->Initialize(this);
+	_manager->Initialize();
+	//background->Initialize(this);
+	//eo->Initialize(this);
+	//player->Initialize(this);
     return;
 }
 
@@ -46,7 +47,8 @@ void ScribbleVania::initialize(HWND hwnd)
 //=============================================================================
 void ScribbleVania::update()
 {
-	Position playerp;
+	_manager->Update(frameTime);
+	/*Position playerp;
 	playerp.x = player->getX();
 	playerp.y = player->getY();
 
@@ -58,7 +60,7 @@ void ScribbleVania::update()
 		player->SetY(playerp.y);
 	}
 
-	background->Update(frameTime);
+	background->Update(frameTime);*/
 }
 
 //=============================================================================
@@ -80,10 +82,11 @@ void ScribbleVania::render()
 {
     graphics->spriteBegin();                // begin drawing sprites
 
-	background->Draw();
+	_manager->Draw();
+	/*background->Draw();
 	eo->Draw();
 	player->Draw();
-	
+	*/
     graphics->spriteEnd();                  // end drawing sprites
 }
 
@@ -93,9 +96,10 @@ void ScribbleVania::render()
 //=============================================================================
 void ScribbleVania::releaseAll()
 {
-	player->Shutdown();
+	_manager->ShutDown();
+	/*player->Shutdown();
 	background->Shutdown();
-	eo->Shutdown();
+	eo->Shutdown();*/
     Game::releaseAll();
     return;
 }
@@ -106,9 +110,10 @@ void ScribbleVania::releaseAll()
 //=============================================================================
 void ScribbleVania::resetAll()
 {
-	background->Reset();
+	_manager->Reset();
+	/*background->Reset();
 	player->Reset();
-	eo->Reset();
+	eo->Reset();*/
     Game::resetAll();
     return;
 }

@@ -4,12 +4,14 @@
 TestPlanetObj::TestPlanetObj() : EnvironmentObject()
 {
 	_static=true;
+	_position.depth=1;
 	_bound = new BoundingCircle(0, this);
 }
 
 TestPlanetObj::TestPlanetObj(unsigned int ID) : EnvironmentObject(ID)
 {
 	_static=true;
+	_position.depth=1;
 	_bound = new BoundingCircle(ID, this);
 }
 
