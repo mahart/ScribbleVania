@@ -30,10 +30,12 @@ ObjectManager::ObjectManager()
 ObjectManager::ObjectManager(Game* game)
 {
 	_game=game;
+
 	unsigned int nextID = GetNextID();
 	_player = new Player(nextID);
 	_objects.insert(std::make_pair(nextID,_player));
 	_drawTree = new DepthTreeNode(_player->getDepth(), nextID);
+
 	FakeFactory(&_objects,this, _drawTree);
 }
 
@@ -46,7 +48,8 @@ ObjectManager::~ObjectManager()
 
 bool ObjectManager::Initialize()
 {
-	for(auto itr = _objects.begin(); itr!=_objects.end(); itr++)
+	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin(); 
+		itr!=_objects.end(); itr++)
 	{
 		if(!itr->second->Initialize(_game))
 		{
@@ -58,7 +61,8 @@ bool ObjectManager::Initialize()
 
 void ObjectManager::Update(float elapsedTime)
 {
-	for(auto itr = _objects.begin(); itr!=_objects.end(); itr++)
+	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin();
+		itr!=_objects.end(); itr++)
 	{
 		itr->second->Update(elapsedTime);
 	}
@@ -67,11 +71,6 @@ void ObjectManager::Update(float elapsedTime)
 void ObjectManager::Draw()
 {
 	this->Draw(_drawTree);
-	/*//for now draw all objects "randomly" will enforce painters algorithm later;
-	for(auto itr = _objects.begin(); itr!=_objects.end(); itr++)
-	{
-		itr->second->Draw();
-	}*/
 }
 
 void ObjectManager::Draw(DepthTreeNode * node)
@@ -99,7 +98,8 @@ void ObjectManager::Draw(vector<unsigned int> objects)
 
 void ObjectManager::ShutDown()
 {
-	for(auto itr = _objects.begin(); itr!=_objects.end(); itr++)
+	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin(); 
+		itr!=_objects.end(); itr++)
 	{
 		if(itr->second!=NULL)
 			itr->second->Shutdown();
@@ -108,7 +108,8 @@ void ObjectManager::ShutDown()
 
 void ObjectManager::Reset()
 {
-	for(auto itr = _objects.begin(); itr!=_objects.end();itr++)
+	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin(); 
+		itr!=_objects.end();itr++)
 	{
 		itr->second->Reset();
 	}
@@ -117,7 +118,7 @@ void ObjectManager::Reset()
 unsigned int ObjectManager::GetNextID()
 {
 	unsigned int id;
-	if(_unusedIDs.size()>0)
+	if(_unusedIDs.size()>0 && this->GetObjectByID(_unusedIDs.back())==NULL)
 	{
 		 id= _unusedIDs.back();	
 		_unusedIDs.pop_back();
@@ -133,5 +134,12 @@ unsigned int ObjectManager::GetNextID()
 
 GameObject* ObjectManager::GetObjectByID(unsigned int ID)
 {
-	return _objects.at(ID);
+	try
+	{
+		return _objects.at(ID);
+	}
+	catch(const std::out_of_range) //No object for given ID
+	{
+		return NULL;
+	}
 }

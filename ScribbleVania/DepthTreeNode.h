@@ -8,7 +8,8 @@ public:
 	std::vector<unsigned int> objectIDs;
 	DepthTreeNode *back;
 	DepthTreeNode *front;
-	void AddToNode(float _depth, unsigned int ID);
+	void AddToNode(float depth, unsigned int ID);
+	void Remove(float depth, unsigned int ID);
 protected:
 private:
 	float _depth;

@@ -48,12 +48,35 @@ void DepthTreeNode::AddToNode(float depth, unsigned int ID)
 			std::vector<unsigned int>::iterator it;
 			for(it = objectIDs.begin(); it!= objectIDs.end();it++)
 			{
-				if(*it >= ID)
+				if(*it <= ID)
 				{
 					break;
 				}
 			}
 			objectIDs.insert(it,ID);
+		}
+	}
+}
+
+void DepthTreeNode::Remove(float depth, unsigned int ID)
+{
+	if(this->_depth > depth)
+	{
+		this->back->Remove(depth,ID);
+	}
+	else if (this->_depth < depth)
+	{
+		this->front->Remove(depth,ID);
+	}
+	else
+	{
+		for(unsigned int i=0; i < objectIDs.size(); i++)
+		{
+			if(objectIDs[i]==ID)
+			{
+				objectIDs.erase(objectIDs.begin()+i);
+				break;
+			}
 		}
 	}
 }
