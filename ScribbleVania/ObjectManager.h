@@ -3,12 +3,19 @@
 
 #include <vector>
 #include <unordered_map>
+#include <queue>
 #include "GameObject.h"
 #include "EnvironmentObject.h"
 #include "game.h"
 #include "DepthTreeNode.h"
 class Player;
 using namespace std;
+
+struct CollisionPair
+{
+	unsigned int IDA;
+	unsigned int IDB;
+};
 
 class ObjectManager
 {
@@ -25,7 +32,7 @@ class ObjectManager
 		unsigned int GetNextID();
 		GameObject* GetObjectByID(unsigned int ID);
 		//loadlevel
-		//switchlevel
+		//switchlevelv
 		
 	protected:
 		//loadroom
@@ -39,6 +46,9 @@ class ObjectManager
 		vector<EnvironmentObject*> _environment;
 		void Draw(DepthTreeNode*node);
 		void Draw(vector<unsigned int> objects);
+		queue<CollisionPair> _collisionPairs;
+
+		void BruteForceCollision();
 	private:
 		
 };

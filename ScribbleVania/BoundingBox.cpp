@@ -16,8 +16,10 @@ BoundingBox::~BoundingBox()
 
 void BoundingBox::Update(float elapsedTime)
 {
-	_image.setX(_owner->getX());
-	_image.setY(_owner->getY());
+	D3DVECTOR p = _owner->GetPosition();
+	
+	_image.setX(p.x);
+	_image.setY(p.y);
 }
 
 void BoundingBox::Draw(SpriteData sd, COLOR_ARGB color)
@@ -34,6 +36,7 @@ bool BoundingBox::Initialize(Game* game, int height, int width)
 {
 	_height = height;
 	_width = width;
+	D3DVECTOR p;
 	if(!_texture.initialize(game->getGraphics(), BOX_IMAGE))
 	{
 		return false;
@@ -45,29 +48,30 @@ bool BoundingBox::Initialize(Game* game, int height, int width)
 			return false;
 		}
 	}
-	_image.setX(_owner->getX());
-	_image.setY(_owner->getY());
+	p = _owner->GetPosition();
+	_image.setX(p.x);
+	_image.setY(p.y);
 	return true;
 }
 
 float BoundingBox::Top()
 {
-	return _owner->getY();
+	return _owner->GetPosition().y;
 }
 
 float BoundingBox::Bottom()
 {
-	return _owner->getY() + _height;
+	return _owner->GetPosition().y + _height;
 }
 
 float BoundingBox::Left()
 {
-	return _owner->getX();
+	return _owner->GetPosition().x;
 }
 
 float BoundingBox::Right()
 {
-	return _owner->getX() + _width;
+	return _owner->GetPosition().x + _width;
 }
 
 void BoundingBox::Reset()
@@ -80,11 +84,12 @@ void BoundingBox::Shutdown()
 	_texture.onLostDevice();
 }
 
-Position BoundingBox::GetCenter()
+D3DVECTOR BoundingBox::GetCenter()
 {
-	Position temp;
+	D3DVECTOR temp;
 	temp.x = _image.getCenterX();
 	temp.y = _image.getCenterY();
+	temp.z = _owner->GetPosition().z;
 	return temp;
 }
 

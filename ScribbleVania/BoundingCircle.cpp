@@ -15,6 +15,7 @@ BoundingCircle::~BoundingCircle()
 
 bool BoundingCircle::Initialize(Game* game, int radius, int UNUSED)
 {
+	D3DVECTOR p;
 	_radius=radius;
 	if(!_texture.initialize(game->getGraphics(), CIRCLE_IMAGE))
 	{
@@ -29,16 +30,18 @@ bool BoundingCircle::Initialize(Game* game, int radius, int UNUSED)
 	}
 	float scale = (float)radius/32;
 	_image.setScale(scale);
-	_image.setX(_owner->getX());
-	_image.setY(_owner->getY());
+	p=_owner->GetPosition();
+	_image.setX(p.x);
+	_image.setY(p.y);
 	
 	return true;
 }
 
 void BoundingCircle::Update(float elapsedTime)
 {
-	_image.setX(_owner->getX());
-	_image.setY(_owner->getY());
+	D3DVECTOR p = _owner->GetPosition();
+	_image.setX(p.x);
+	_image.setY(p.y);
 }
 
 void BoundingCircle::Draw(SpriteData sd, COLOR_ARGB color )
@@ -66,11 +69,12 @@ void BoundingCircle::Shutdown()
 	_texture.onLostDevice();
 }
 
-Position BoundingCircle::GetCenter()
+D3DVECTOR BoundingCircle::GetCenter()
 {
-	Position temp;
+	D3DVECTOR temp;
 	temp.x = _image.getCenterX();
 	temp.y = _image.getCenterY();
+	temp.z = _owner->GetPosition().z;
 	return temp;
 }
 

@@ -3,12 +3,12 @@
 
 #include "EnvironmentObject.h"
 
-class TestPlanetObj : public EnvironmentObject
+class HorizontalTestBarrier : public EnvironmentObject
 {
 	public:
-		TestPlanetObj();
-		TestPlanetObj(unsigned int ID);
-		~TestPlanetObj();
+		HorizontalTestBarrier();
+		HorizontalTestBarrier(unsigned int ID, unsigned int height, unsigned int width,D3DXVECTOR3 position);
+		~HorizontalTestBarrier();
 
 		bool Initialize(Game* game);
 		bool Initialize(Game* game, D3DXVECTOR3 position);
@@ -17,4 +17,6 @@ class TestPlanetObj : public EnvironmentObject
 		void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE);
 	protected:
 	private:
+		unsigned int _width;
+		unsigned int _height;
 };

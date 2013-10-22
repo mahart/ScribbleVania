@@ -3,15 +3,20 @@
 
 TestPlanetObj::TestPlanetObj() : EnvironmentObject()
 {
+	_velocity= ZERO_VECTOR;
+	
+	_type = ObjectType::EnvironmentObject;
 	_static=true;
-	_position.depth=1;
+	_position.z=1;
 	_bound = new BoundingCircle(0, this);
 }
 
 TestPlanetObj::TestPlanetObj(unsigned int ID) : EnvironmentObject(ID)
 {
+	_velocity= ZERO_VECTOR;
+	_type = ObjectType::EnvironmentObject;
 	_static=true;
-	_position.depth=1;
+	_position.z=1;
 	_bound = new BoundingCircle(ID, this);
 }
 
@@ -24,6 +29,12 @@ TestPlanetObj::~TestPlanetObj()
 
 bool TestPlanetObj::Initialize(Game* game)
 {
+	return TestPlanetObj::Initialize(game, D3DXVECTOR3(GAME_WIDTH*0.5f - objectImage.getWidth() *0.5f, 
+			 GAME_HEIGHT*0.5f - objectImage.getHeight()*0.5f, 1));
+}
+
+bool TestPlanetObj::Initialize(Game* game, D3DXVECTOR3 position)
+{
 	_game=game;
 	
 	if(!objectTexture.initialize(_game->getGraphics(),PLANET_IMAGE))
@@ -32,12 +43,11 @@ bool TestPlanetObj::Initialize(Game* game)
 	}
 	else
 	{
-		if(! objectImage.initialize(_game->getGraphics(),0, 0,0,&objectTexture))
+		if(!objectImage.initialize(_game->getGraphics(),0, 0,0,&objectTexture))
 		{
 			return false;
 		}
-		_position.x = GAME_WIDTH*0.5f - objectImage.getWidth() *0.5f;
-		_position.y = GAME_HEIGHT*0.5f - objectImage.getHeight()*0.5f;
+		_position = position;
 		int rad=0;
 		if(this->GetWidth()>this->GetHeight())
 		{

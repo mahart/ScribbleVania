@@ -4,7 +4,7 @@
 #include "constants.h"
 #include "game.h"
 #include "Collidable.h"
-#include "GameStructs.h"
+#include <d3dx9math.h>
 typedef enum class ObjectType
 {
 	Player = 0,
@@ -12,7 +12,7 @@ typedef enum class ObjectType
 	Background = 2,
 	EnvironmentObject=3,
 	Boss=4,
-	Enemy =5,
+	Enemy=5,
 	Other
 } ObjecType;
 
@@ -34,27 +34,35 @@ class GameObject
 		
 		virtual void Update(float elapsedTime) = 0;
 
+		//Used to fix position after collision, if applicable
+		virtual void Update(float elapsedTime, D3DXVECTOR3 velocity) {Update(elapsedTime);}
+
 		//Startup and Shutdown
 		virtual bool Initialize(Game* game) = 0;
+		virtual bool Initialize(Game* game, D3DXVECTOR3 position)=0;
 		virtual void Shutdown() = 0;
 
 		virtual void Reset() =0;
 		
 		//Getters
-		unsigned int ID() {return _id;}
-		virtual float getX() {return _position.x;}
-		virtual float getY() {return _position.y;}
-		virtual Position GetCenter()=0;
-		virtual float getDepth() {return _position.depth;}
-		virtual ObjectType getObjectType() {return _type;}
-		virtual Collidable* getBounds() {return _bound;}
+		unsigned int GetID() {return _id;}
+		virtual D3DXVECTOR3 GetPosition() {return _position;}
+		virtual D3DXVECTOR3 GetVelocity() {return _velocity;}
+
+		virtual D3DXVECTOR3 GetCenter()=0;
+
+		virtual ObjectType GetObjectType() {return _type;}
+		virtual Collidable* GetBounds() {return _bound;}
+
 		virtual int GetWidth()=0;
 		virtual int GetHeight()=0;
+
 		virtual Collidable* GetCollidable(){return _bound;}
 	protected:
 		unsigned int _id;
 		Game* _game;
-		Position _position;
+		D3DXVECTOR3  _position;
+		D3DXVECTOR3 _velocity;
 		ObjectType _type;
 		Collidable* _bound;
 	private:

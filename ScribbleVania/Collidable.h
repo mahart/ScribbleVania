@@ -1,10 +1,12 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
+#include <DirectXMath.h>
 #include "graphics.h"
 #include "GameStructs.h"
 #include "image.h"
 #include "TextureManager.h"
 #include "game.h"
+#include "constants.h"
 class GameObject;
 
 enum CollidableType
@@ -30,7 +32,7 @@ public:
 	virtual void Shutdown()=0;
 	virtual bool Intersects(Collidable *c)=0;
 	CollidableType Type(){return _type;}
-	virtual Position GetCenter()=0;
+	virtual D3DVECTOR GetCenter()=0;
 protected:
 	GameObject* _owner;
 	CollidableType _type;

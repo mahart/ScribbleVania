@@ -18,6 +18,11 @@ EnvironmentObject::~EnvironmentObject()
 
 bool EnvironmentObject::Initialize(Game* game)
 {
+	return EnvironmentObject::Initialize(game, ZERO_VECTOR);
+}
+
+bool EnvironmentObject::Initialize(Game* game, D3DXVECTOR3 position)
+{
 	_game=game;
 	return true;
 }
@@ -53,10 +58,11 @@ int EnvironmentObject::GetWidth()
 	return objectImage.getWidth();
 }
 
-Position EnvironmentObject::GetCenter()
+D3DXVECTOR3 EnvironmentObject::GetCenter()
 {
-	Position temp;
+	D3DXVECTOR3 temp;
 	temp.x = objectImage.getCenterX();
 	temp.y = objectImage.getCenterY();
+	temp.z = this->_position.z;
 	return temp;
 }

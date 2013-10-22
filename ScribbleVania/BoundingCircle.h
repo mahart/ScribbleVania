@@ -19,7 +19,7 @@ class BoundingCircle : public Collidable
 		virtual void Reset();
 		virtual void Shutdown();
 		virtual bool Intersects(Collidable *c);
-		virtual Position GetCenter();
+		virtual D3DVECTOR GetCenter();
 	protected:
 		int _radius;
 	private:

@@ -11,6 +11,7 @@ class TestBackGround : public EnvironmentObject
 		~TestBackGround();
 
 		bool Initialize(Game* game);
+		bool Initialize(Game* game, D3DXVECTOR3 position);
 		void Update(float elapsedTime);
 	protected:
 	private:

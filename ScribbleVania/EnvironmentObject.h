@@ -22,13 +22,14 @@ class EnvironmentObject : public  GameObject
 		virtual void Update(float elapsedTime)=0;
 
 		//Startup and Shutdown
-		virtual bool Initialize(Game* game)=0;
 		virtual void Shutdown();
+		virtual bool Initialize(Game* game);
+		virtual bool Initialize(Game* game, D3DXVECTOR3 position);
 
 		virtual void Reset();
 		virtual int GetWidth();
 		virtual int GetHeight();
-		virtual Position GetCenter();
+		virtual D3DXVECTOR3 GetCenter();
 		//getter
 		bool IsStatic() {return _static;}
 

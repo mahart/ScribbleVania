@@ -3,7 +3,8 @@
 
 #include "Collidable.h"
 #include "game.h"
-
+#include <DirectXMath.h>
+#include "constants.h"
 class BoundingCircle;
 class GameObject;
 
@@ -25,7 +26,7 @@ class BoundingBox : public Collidable
 		virtual void Reset();
 		virtual void Shutdown();
 		virtual bool Intersects(Collidable *c);
-		virtual Position GetCenter();
+		virtual D3DVECTOR GetCenter();
 	protected:
 		int _width;
 		int _height;

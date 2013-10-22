@@ -6,7 +6,14 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
+#include <d3dx9math.h>
 
+
+//===============================================
+// New Stuff
+//===============================================
+const float MAX_PLAYER_SPEED = 200.0f;
+const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
 //-----------------------------------------------
 // Useful macros
 //-----------------------------------------------
@@ -34,6 +41,7 @@
 //-----------------------------------------------
 // graphic images
 const char NEBULA_IMAGE[] = "pictures\\orion.jpg";  // photo source NASA/courtesy of nasaimages.org 
+const char TEST_BG[]="pictures\\ws_Abstract.jpg";
 const char PLANET_IMAGE[] = "pictures\\planet.png"; // picture of planet
 const char SHIP_IMAGE[]   = "pictures\\ship.png";   // spaceship
 const char BOX_IMAGE[] = "pictures\\BoundingBox.png";//Bounding box 
@@ -43,8 +51,8 @@ const char CIRCLE_IMAGE[] = "pictures\\BoundingCircle.png";
 const char CLASS_NAME[] = "ScribbleVania";
 const char GAME_TITLE[] = "ScribbleVania";
 const bool FULLSCREEN = false;              // windowed or fullscreen
-const UINT GAME_WIDTH =  640;               // width of game in pixels
-const UINT GAME_HEIGHT = 480;               // height of game in pixels
+const UINT GAME_WIDTH =  1280;               // width of game in pixels
+const UINT GAME_HEIGHT = 720;               // height of game in pixels
 const int  SHIP_START_FRAME = 0;            // starting frame of ship animation
 const int  SHIP_END_FRAME = 3;              // last frame of ship animation
 const float SHIP_ANIMATION_DELAY = 0.2f;    // time between frames of ship animation
@@ -69,8 +77,8 @@ const float MAX_FRAME_TIME = 1.0f/MIN_FRAME_RATE; // maximum time used in calcul
 const UCHAR ESC_KEY      = VK_ESCAPE;       // escape key
 const UCHAR ALT_KEY      = VK_MENU;         // Alt key
 const UCHAR ENTER_KEY    = VK_RETURN;       // Enter key
-const UCHAR SHIP_LEFT_KEY    = VK_A;     // left arrow
-const UCHAR SHIP_RIGHT_KEY   = VK_D;    // right arrow
-const UCHAR SHIP_UP_KEY      = VK_W;       // up arrow
-const UCHAR SHIP_DOWN_KEY    = VK_S;     // down arrow
+const UCHAR PLAYER_LEFT_KEY    = VK_A;     // left arrow
+const UCHAR PLAYER_RIGHT_KEY   = VK_D;    // right arrow
+const UCHAR PLAYER_UP_KEY      = VK_W;       // up arrow
+const UCHAR PLAYER_DOWN_KEY    = VK_S;     // down arrow
 
