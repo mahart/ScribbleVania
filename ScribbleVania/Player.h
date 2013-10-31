@@ -45,6 +45,8 @@ class Player : public  GameObject
 		int _jumpMax;
 		PlayerState _state;
 		float _fallAccel;
+		bool _onGround;
+		bool _slideOnLeft;
 		void WallCollision(EnvironmentObject* obj);
 		void FloorCollision(EnvironmentObject* obj);
 		void DefaultCollision(GameObject* obj); 

@@ -117,75 +117,12 @@ void Player::Update(float elapsedTime)
 	}
 	else
 	{
+		//walking
 		//k_velocity.y += _fallAccel*elapsedTime*elapsedTime;
 
-		if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
-		{
-			_velocity.x += _accel*elapsedTime*elapsedTime;
-			/*
-			_position.x = _position.x + elapsedTime * SHIP_SPEED;
-			if (_position.x > GAME_WIDTH)               // if off screen right
-				_position.x = (float)-playerImage.getWidth();     // position off screen left*/
-
-		}
-		if(input->isKeyDown(PLAYER_LEFT_KEY))             // if accel left
-		{
-			_velocity.x -= _accel*elapsedTime*elapsedTime;
-			/*
-			_position.x = _position.x - elapsedTime * SHIP_SPEED;
-			if (_position.x < -playerImage.getWidth())         // if off screen left
-				_position.x = (float)GAME_WIDTH;           // position off screen right
-				*/
-		}
-		if(input->isKeyDown(PLAYER_UP_KEY))               // if accel up
-		{
-			_velocity.y =-350;
-			_jumpCount=0;
-			_state = PlayerState::jumping;
-			/*
-			_position.y = _position.y - elapsedTime * SHIP_SPEED;
-			if (_position.y < -playerImage.getHeight())        // if off screen top
-				_position.y = (float)GAME_HEIGHT;          // position off screen bottom
-				*/
-		}
-		if(input->isKeyDown(PLAYER_DOWN_KEY))             // if accel down
-		{
-			_state = PlayerState::jumping;
-			//_velocity.y += _accel*elapsedTime*elapsedTime;
-			/*
-			_position.y = _position.y + elapsedTime * SHIP_SPEED;
-			if (_position.y> GAME_HEIGHT)              // if off screen bottom
-				_position.y = (float)-playerImage.getHeight();    // position off screen top*/
-		}
-
-		if(!input->isKeyDown(PLAYER_LEFT_KEY) && !input->isKeyDown(PLAYER_RIGHT_KEY))
-		{
-			if(_velocity.x <0)
-			{
-				_velocity.x += _accel*0.5f*elapsedTime*elapsedTime;
-				_velocity.x = (_velocity.x <0)? _velocity.x : 0;
-			}
-			else if(_velocity.x >0)
-			{
-				_velocity.x -= _accel*0.5f*elapsedTime*elapsedTime;
-				_velocity.x = (_velocity.x >0)? _velocity.x : 0;
-			}
-		}
-		if(!input->isKeyDown(PLAYER_UP_KEY) && !input->isKeyDown(PLAYER_DOWN_KEY))
-		{
-			if(_velocity.y < 0)
-			{
-				_velocity.y +=  _accel*0.5f*elapsedTime*elapsedTime;
-				_velocity.y = (_velocity.y<0)?_velocity.y:0;
-			}
-			else if(_velocity.y >0)
-			{
-				_velocity.y -= _accel*0.5f*elapsedTime*elapsedTime;
-				_velocity.y  = (_velocity.y>0)?_velocity.y:0;
-			}
-		}
+		
 	}
-
+	
 
 	if(_velocity.x<(MAX_PLAYER_SPEED*-1))
 	{
@@ -262,6 +199,72 @@ void Player::UpdateJumping(float elapsedTime,Input* input)
 
 void Player::UpdateWalking(float elapsedTime,Input* input)
 {
+	_velocity.y += _fallAccel*elapsedTime*elapsedTime;
+	if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
+		{
+			_velocity.x += _accel*elapsedTime*elapsedTime;
+			/*
+			_position.x = _position.x + elapsedTime * SHIP_SPEED;
+			if (_position.x > GAME_WIDTH)               // if off screen right
+				_position.x = (float)-playerImage.getWidth();     // position off screen left*/
+
+		}
+		if(input->isKeyDown(PLAYER_LEFT_KEY))             // if accel left
+		{
+			_velocity.x -= _accel*elapsedTime*elapsedTime;
+			/*
+			_position.x = _position.x - elapsedTime * SHIP_SPEED;
+			if (_position.x < -playerImage.getWidth())         // if off screen left
+				_position.x = (float)GAME_WIDTH;           // position off screen right
+				*/
+		}
+		if(input->isKeyDown(PLAYER_UP_KEY))               // if accel up
+		{
+			_velocity.y =-350;
+			_jumpCount=0;
+			_state = PlayerState::jumping;
+			/*
+			_position.y = _position.y - elapsedTime * SHIP_SPEED;
+			if (_position.y < -playerImage.getHeight())        // if off screen top
+				_position.y = (float)GAME_HEIGHT;          // position off screen bottom
+				*/
+		}
+		if(input->isKeyDown(PLAYER_DOWN_KEY))             // if accel down
+		{
+			_state = PlayerState::jumping;
+			//_velocity.y += _accel*elapsedTime*elapsedTime;
+			/*
+			_position.y = _position.y + elapsedTime * SHIP_SPEED;
+			if (_position.y> GAME_HEIGHT)              // if off screen bottom
+				_position.y = (float)-playerImage.getHeight();    // position off screen top*/
+		}
+
+		if(!input->isKeyDown(PLAYER_LEFT_KEY) && !input->isKeyDown(PLAYER_RIGHT_KEY))
+		{
+			if(_velocity.x <0)
+			{
+				_velocity.x += _accel*0.5f*elapsedTime*elapsedTime;
+				_velocity.x = (_velocity.x <0)? _velocity.x : 0;
+			}
+			else if(_velocity.x >0)
+			{
+				_velocity.x -= _accel*0.5f*elapsedTime*elapsedTime;
+				_velocity.x = (_velocity.x >0)? _velocity.x : 0;
+			}
+		}
+		/*if(!input->isKeyDown(PLAYER_UP_KEY) && !input->isKeyDown(PLAYER_DOWN_KEY))
+		{
+			if(_velocity.y < 0)
+			{
+				_velocity.y +=  _accel*0.5f*elapsedTime*elapsedTime;
+				_velocity.y = (_velocity.y<0)?_velocity.y:0;
+			}
+			else if(_velocity.y >0)
+			{
+				_velocity.y -= _accel*0.5f*elapsedTime*elapsedTime;
+				_velocity.y  = (_velocity.y>0)?_velocity.y:0;
+			}
+		}*/
 }
 
 void Player::UpdateSliding(float elapsedTime,Input* input)
@@ -271,32 +274,12 @@ void Player::UpdateSliding(float elapsedTime,Input* input)
 void Player::ProcessCollision(GameObject* obj)
 {
 	//_state = PlayerState::walking;
-	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
-	diff.z=0;
-	D3DXVECTOR3 direction;
-
-	if(diff.x==0 && diff.y==0)
-	{
-		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
-		D3DXVec3Normalize(&direction, &temp);
-	}
-	else
-	{
-		D3DXVec3Normalize(&direction,&diff);
-	}
-
-	bool vertNeg = this->_velocity.y <0;
-	bool horzNeg = this->_velocity.x <0;
-	while(this->_bound->Intersects(obj->GetCollidable()))
-	{
-		this->_position+=direction;
-	}
 
 	switch (obj->GetObjectType())
 	{
 		case ObjectType::FloorEnvironment:
 			FloorCollision((EnvironmentObject*)obj);
-			break;
+			//break;
 		case ObjectType::WallEnvironment:
 			WallCollision((EnvironmentObject*)obj);
 			//break;
@@ -329,18 +312,18 @@ void Player::DefaultCollision(GameObject* obj)
 	bool horzNeg = this->_velocity.x <0;
 	while(this->_bound->Intersects(obj->GetCollidable()))
 	{
-		this->_position+=direction;
+		this->_position+=direction*0.1f;
 
 	//	this->_velocity.x=0;
 		//this->_velocity.y=0;
 		if(vertNeg && this->_velocity.y!=0)
 		{
-			this->_velocity.y+=100;
+			this->_velocity.y+=10;
 			this->_velocity.y= this->_velocity.y>0?0:this->_velocity.y;
 		}
 		else if(this->_velocity.y!=0)
 		{
-			this->_velocity.y-=100;
+			this->_velocity.y-=10;
 			this->_velocity.y = this->_velocity.y<0?0:this->_velocity.y;
 		}
 
