@@ -3,7 +3,8 @@
 Player::Player() : GameObject()
 {
 	_accel = 250000;
-	
+	_jumpCount =1;
+	_jumpMax = 1;
 	_fallAccel = 981000;
 	_state = PlayerState::jumping;
 	_type = ObjectType::Player;
@@ -20,11 +21,27 @@ Player::Player() : GameObject()
 Player::Player(unsigned int id) : GameObject(id)
 {
 	_accel = 250000;
-	_fallAccel = 98100/2;
+	_fallAccel = 981000;
+	_jumpCount=1;
+	_jumpMax=1;
 	_state = PlayerState::jumping;
 	_type = ObjectType::Player;
 	_velocity= ZERO_VECTOR;
 	_position= ZERO_VECTOR;
+	_type = ObjectType::Player;
+	_bound = new BoundingBox(id,this);
+}
+
+Player::Player(unsigned int id,D3DXVECTOR3 position):GameObject(id)
+{
+	_accel = 250000;
+	_jumpCount =1;
+	_jumpMax = 1;
+	_fallAccel = 98100;
+	_state = PlayerState::jumping;
+	_type = ObjectType::Player;
+	_velocity= ZERO_VECTOR;
+	_position= position;
 	_type = ObjectType::Player;
 	_bound = new BoundingBox(id,this);
 }
@@ -38,7 +55,7 @@ Player::~Player()
 
 bool Player::Initialize(Game* game)
 {
-	return Player::Initialize(game, ZERO_VECTOR);
+	return Player::Initialize(game, _position==NULL?ZERO_VECTOR:_position);
 }
 
 bool Player::Initialize(Game* game, D3DXVECTOR3 position)
@@ -79,28 +96,24 @@ void Player::Update(float elapsedTime)
 	//Update image frame if necessary
 
 	Input* input = _game->getInput();
+
+	switch(_state)
+	{
+	case PlayerState::jumping:
+		UpdateJumping(elapsedTime,input);
+		break;
+	case PlayerState::sliding:
+		UpdateSliding(elapsedTime,input);
+		break;
+	default: //walking
+		UpdateWalking(elapsedTime,input);
+		break;
+	}
+
 	if (_state == PlayerState::jumping)
 	{
-		_velocity.y += _fallAccel*elapsedTime*elapsedTime;
+		//jumping
 
-		if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
-		{
-			_velocity.x += _accel*elapsedTime*elapsedTime*0.25f;
-			/*
-			_position.x = _position.x + elapsedTime * SHIP_SPEED;
-			if (_position.x > GAME_WIDTH)               // if off screen right
-				_position.x = (float)-playerImage.getWidth();     // position off screen left*/
-
-		}
-		if(input->isKeyDown(PLAYER_LEFT_KEY))             // if accel left
-		{
-			_velocity.x -= _accel*elapsedTime*elapsedTime*0.25f;
-			/*
-			_position.x = _position.x - elapsedTime * SHIP_SPEED;
-			if (_position.x < -playerImage.getWidth())         // if off screen left
-				_position.x = (float)GAME_WIDTH;           // position off screen right
-				*/
-		}
 	}
 	else
 	{
@@ -127,6 +140,7 @@ void Player::Update(float elapsedTime)
 		if(input->isKeyDown(PLAYER_UP_KEY))               // if accel up
 		{
 			_velocity.y =-350;
+			_jumpCount=0;
 			_state = PlayerState::jumping;
 			/*
 			_position.y = _position.y - elapsedTime * SHIP_SPEED;
@@ -188,7 +202,7 @@ void Player::Update(float elapsedTime)
 	}
 	else if(_velocity.y > MAX_PLAYER_SPEED)
 	{
-		_velocity.y = MAX_PLAYER_SPEED;
+		//_velocity.y = MAX_PLAYER_SPEED; 
 	}
 
 	
@@ -214,13 +228,146 @@ void Player::Update(float elapsedTime)
 	input=NULL;
 }
 
-void Player::Update(float elapsedTime, D3DXVECTOR3 invVelocity)
+void Player::UpdateJumping(float elapsedTime,Input* input)
 {
-	_state = PlayerState::walking;
+	_velocity.y += _fallAccel*elapsedTime*elapsedTime;
+
+		if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
+		{
+			_velocity.x += _accel*elapsedTime*elapsedTime*0.25f;
+			/*
+			_position.x = _position.x + elapsedTime * SHIP_SPEED;
+			if (_position.x > GAME_WIDTH)               // if off screen right
+				_position.x = (float)-playerImage.getWidth();     // position off screen left*/
+
+		}
+		if(input->isKeyDown(PLAYER_LEFT_KEY))             // if accel left
+		{
+			_velocity.x -= _accel*elapsedTime*elapsedTime*0.25f;
+			/*
+			_position.x = _position.x - elapsedTime * SHIP_SPEED;
+			if (_position.x < -playerImage.getWidth())         // if off screen left
+				_position.x = (float)GAME_WIDTH;           // position off screen right
+				*/
+		}
+		if(input->isKeyDown(PLAYER_UP_KEY))               // if accel up
+		{
+			if(_velocity.y>=0 && _jumpCount<_jumpMax)
+			{
+				_velocity.y =-350;
+				_jumpCount++;
+			}
+		}
+}
+
+void Player::UpdateWalking(float elapsedTime,Input* input)
+{
+}
+
+void Player::UpdateSliding(float elapsedTime,Input* input)
+{
+}
+
+void Player::ProcessCollision(GameObject* obj)
+{
+	//_state = PlayerState::walking;
+	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
+	diff.z=0;
+	D3DXVECTOR3 direction;
+
+	if(diff.x==0 && diff.y==0)
+	{
+		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
+		D3DXVec3Normalize(&direction, &temp);
+	}
+	else
+	{
+		D3DXVec3Normalize(&direction,&diff);
+	}
+
+	bool vertNeg = this->_velocity.y <0;
+	bool horzNeg = this->_velocity.x <0;
+	while(this->_bound->Intersects(obj->GetCollidable()))
+	{
+		this->_position+=direction;
+	}
+
+	switch (obj->GetObjectType())
+	{
+		case ObjectType::FloorEnvironment:
+			FloorCollision((EnvironmentObject*)obj);
+			break;
+		case ObjectType::WallEnvironment:
+			WallCollision((EnvironmentObject*)obj);
+			//break;
+		default:
+			DefaultCollision(obj);
+			break;
+	}
+	//_position.x += invVelocity.x * elapsedTime;
+	//_position.y += invVelocity.y * elapsedTime;
+}
 
 
-	_position.x += invVelocity.x * elapsedTime;
-	_position.y += invVelocity.y * elapsedTime;
+void Player::DefaultCollision(GameObject* obj)
+{
+	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
+	diff.z=0;
+	D3DXVECTOR3 direction;
+
+	if(diff.x==0 && diff.y==0)
+	{
+		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
+		D3DXVec3Normalize(&direction, &temp);
+	}
+	else
+	{
+		D3DXVec3Normalize(&direction,&diff);
+	}
+
+	bool vertNeg = this->_velocity.y <0;
+	bool horzNeg = this->_velocity.x <0;
+	while(this->_bound->Intersects(obj->GetCollidable()))
+	{
+		this->_position+=direction;
+
+	//	this->_velocity.x=0;
+		//this->_velocity.y=0;
+		if(vertNeg && this->_velocity.y!=0)
+		{
+			this->_velocity.y+=100;
+			this->_velocity.y= this->_velocity.y>0?0:this->_velocity.y;
+		}
+		else if(this->_velocity.y!=0)
+		{
+			this->_velocity.y-=100;
+			this->_velocity.y = this->_velocity.y<0?0:this->_velocity.y;
+		}
+
+		/*if(horzNeg && this->_velocity.y!=0)
+		{
+			this->_velocity.x+=1;
+			this->_velocity.x = this->_velocity.x>0?0:this->_velocity.x;
+		}
+		else if(this->_velocity!=0)
+		{
+			this->_velocity.x-=1;
+			this->_velocity.x = this->_velocity.x<0?0:this->_velocity.x;
+		}*/
+		if(this->_velocity.y==0)
+			_state=PlayerState::walking;
+	}
+}
+
+void Player::FloorCollision(EnvironmentObject* obj)
+{
+	this->_velocity.y=0;
+	_state=PlayerState::walking;
+}
+
+void Player::WallCollision(EnvironmentObject* obj)
+{
+
 }
 
 void Player::Draw(COLOR_ARGB color)

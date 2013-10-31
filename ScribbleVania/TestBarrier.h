@@ -3,12 +3,12 @@
 
 #include "EnvironmentObject.h"
 
-class HorizontalTestBarrier : public EnvironmentObject
+class TestBarrier : public EnvironmentObject
 {
 	public:
-		HorizontalTestBarrier();
-		HorizontalTestBarrier(unsigned int ID, unsigned int height, unsigned int width,D3DXVECTOR3 position);
-		~HorizontalTestBarrier();
+		TestBarrier();
+		TestBarrier(unsigned int ID, unsigned int height, unsigned int width,D3DXVECTOR3 position, ObjectType type);
+		~TestBarrier();
 
 		bool Initialize(Game* game);
 		bool Initialize(Game* game, D3DXVECTOR3 position);

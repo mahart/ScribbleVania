@@ -8,6 +8,7 @@
 typedef enum class PlayerState
 {
 	walking,
+	sliding,
 	jumping
 } PlayerState;
 
@@ -16,6 +17,7 @@ class Player : public  GameObject
 	public:
 		Player();
 		Player(unsigned int id);
+		Player(unsigned int id, D3DXVECTOR3 position);
 		virtual ~Player();
 
 		void Draw(COLOR_ARGB color = graphicsNS::WHITE);
@@ -24,7 +26,7 @@ class Player : public  GameObject
 		void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE); // draw with SpriteData using color as filter
 		
 		void Update(float elapsedTime);
-		void Update(float elapsedTime, D3DXVECTOR3 invVelocity);
+		void ProcessCollision(GameObject* obj);
 		D3DXVECTOR3 GetCenter();
 		//Startup and Shutdown
 		bool Initialize(Game* game);
@@ -39,6 +41,14 @@ class Player : public  GameObject
 		Image playerImage;
 		TextureManager playerTexture;
 	private:
+		int _jumpCount;
+		int _jumpMax;
 		PlayerState _state;
 		float _fallAccel;
+		void WallCollision(EnvironmentObject* obj);
+		void FloorCollision(EnvironmentObject* obj);
+		void DefaultCollision(GameObject* obj); 
+		void UpdateJumping(float elapsedTime,Input* input);
+		void UpdateWalking(float elapsedTime,Input* input);
+		void UpdateSliding(float elapsedTime,Input* input);
 };

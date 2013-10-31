@@ -13,6 +13,8 @@ typedef enum class ObjectType
 	EnvironmentObject=3,
 	Boss=4,
 	Enemy=5,
+	WallEnvironment,
+	FloorEnvironment,
 	Other
 } ObjecType;
 
@@ -35,7 +37,7 @@ class GameObject
 		virtual void Update(float elapsedTime) = 0;
 
 		//Used to fix position after collision, if applicable
-		virtual void Update(float elapsedTime, D3DXVECTOR3 velocity) {Update(elapsedTime);}
+		virtual void ProcessCollision(GameObject* obj) {Update(1.0f);}
 
 		//Startup and Shutdown
 		virtual bool Initialize(Game* game) = 0;

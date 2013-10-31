@@ -26,7 +26,8 @@ class BoundingBox : public Collidable
 		virtual void Reset();
 		virtual void Shutdown();
 		virtual bool Intersects(Collidable *c);
-		virtual D3DVECTOR GetCenter();
+		virtual D3DXVECTOR3 GetCenter();
+		virtual D3DXVECTOR3 GetNearestPoint(D3DXVECTOR3 center);
 	protected:
 		int _width;
 		int _height;

@@ -19,7 +19,7 @@ class EnvironmentObject : public  GameObject
 		//   The current SpriteData.rect is used to select the texture.
 		virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE); // draw with SpriteData using color as filter
 		
-		virtual void Update(float elapsedTime)=0;
+		virtual void Update(float elapsedTime){};
 
 		//Startup and Shutdown
 		virtual void Shutdown();

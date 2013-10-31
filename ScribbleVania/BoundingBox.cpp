@@ -16,7 +16,7 @@ BoundingBox::~BoundingBox()
 
 void BoundingBox::Update(float elapsedTime)
 {
-	D3DVECTOR p = _owner->GetPosition();
+	D3DXVECTOR3 p = _owner->GetPosition();
 	
 	_image.setX(p.x);
 	_image.setY(p.y);
@@ -36,7 +36,7 @@ bool BoundingBox::Initialize(Game* game, int height, int width)
 {
 	_height = height;
 	_width = width;
-	D3DVECTOR p;
+	D3DXVECTOR3 p;
 	if(!_texture.initialize(game->getGraphics(), BOX_IMAGE))
 	{
 		return false;
@@ -84,9 +84,9 @@ void BoundingBox::Shutdown()
 	_texture.onLostDevice();
 }
 
-D3DVECTOR BoundingBox::GetCenter()
+D3DXVECTOR3 BoundingBox::GetCenter()
 {
-	D3DVECTOR temp;
+	D3DXVECTOR3 temp;
 	temp.x = _image.getCenterX();
 	temp.y = _image.getCenterY();
 	temp.z = _owner->GetPosition().z;
@@ -151,4 +151,36 @@ bool BoundingBox::IntersectC(BoundingCircle* c)
 
 	float distanceSqr = (distanceX * distanceX) + (distanceY * distanceY);
 	return distanceSqr < (c->Radius() * c->Radius());
+}
+
+D3DXVECTOR3 BoundingBox::GetNearestPoint(D3DXVECTOR3 center)
+{
+	D3DXVECTOR3 pt;
+
+	if(this->Top()>center.y)
+	{
+		pt.y=this->Top();
+	}
+	else if (this->Bottom() < center.y)
+	{
+		pt.y=this->Bottom();
+	}
+	else
+	{
+		pt.y=center.y;
+	}
+
+	if(this->Left()> center.x)
+	{
+		pt.x = this->Left();
+	}
+	else if(this->Right()< center.x)
+	{
+		pt.x = this->Right();
+	}
+	else
+	{
+		pt.x = center.x;
+	}
+	return pt;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
-#include <DirectXMath.h>
+#include <d3dx9math.h>
 #include "graphics.h"
 #include "GameStructs.h"
 #include "image.h"
@@ -24,7 +24,7 @@ public:
 
 	virtual void Update(float elapsedTime)=0;
 	virtual bool Initialize(Game* game, int dimension1, int dimansion2)=0;
-
+	
 	//Debug Function
 	virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE)=0;
 	virtual void Draw(COLOR_ARGB color = graphicsNS::WHITE)=0;
@@ -32,7 +32,8 @@ public:
 	virtual void Shutdown()=0;
 	virtual bool Intersects(Collidable *c)=0;
 	CollidableType Type(){return _type;}
-	virtual D3DVECTOR GetCenter()=0;
+	virtual D3DXVECTOR3 GetCenter()=0;
+	virtual D3DXVECTOR3 GetNearestPoint(D3DXVECTOR3 center)=0;
 protected:
 	GameObject* _owner;
 	CollidableType _type;

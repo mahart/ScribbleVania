@@ -1,7 +1,7 @@
-#include "HorizontalTestBarrier.h"
+#include "TestBarrier.h"
 #include "BoundingBox.h"
 
-HorizontalTestBarrier::HorizontalTestBarrier()
+TestBarrier::TestBarrier()
 {
 	_velocity = ZERO_VECTOR;
 	_type = ObjectType::EnvironmentObject;
@@ -10,11 +10,11 @@ HorizontalTestBarrier::HorizontalTestBarrier()
 	_bound = new BoundingBox(0, this);
 }
 
-HorizontalTestBarrier::HorizontalTestBarrier(unsigned int ID, unsigned int height, unsigned int width, D3DXVECTOR3 position)
+TestBarrier::TestBarrier(unsigned int ID, unsigned int height, unsigned int width, D3DXVECTOR3 position, ObjectType type)
 {
 	_velocity = ZERO_VECTOR;
 	_id =ID;
-	_type = ObjectType::EnvironmentObject;
+	_type = type;
 	_static=true;
 	_position.z=1;
 	_bound = new BoundingBox(ID, this);
@@ -23,19 +23,19 @@ HorizontalTestBarrier::HorizontalTestBarrier(unsigned int ID, unsigned int heigh
 	_position = position;
 }
 
-HorizontalTestBarrier::~HorizontalTestBarrier()
+TestBarrier::~TestBarrier()
 {
 	SAFE_DELETE(_bound);
 	_bound=NULL;
 	EnvironmentObject::~EnvironmentObject();
 }
 
-bool HorizontalTestBarrier::Initialize(Game* game)
+bool TestBarrier::Initialize(Game* game)
 {
-	return HorizontalTestBarrier::Initialize(game, D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1));
+	return TestBarrier::Initialize(game, D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1));
 }
 
-bool HorizontalTestBarrier::Initialize(Game* game, D3DXVECTOR3 position)
+bool TestBarrier::Initialize(Game* game, D3DXVECTOR3 position)
 {
 	_game = game;
 	//BOX_IMAGE
@@ -58,14 +58,14 @@ bool HorizontalTestBarrier::Initialize(Game* game, D3DXVECTOR3 position)
 	return true;
 }
 
-void HorizontalTestBarrier::Update(float elapsedTime)
+void TestBarrier::Update(float elapsedTime)
 {
 	objectImage.setX(_position.x);
 	objectImage.setY(_position.y);
 	_bound->Update(elapsedTime);
 }
 
-void HorizontalTestBarrier::Draw(COLOR_ARGB color)
+void TestBarrier::Draw(COLOR_ARGB color)
 {
 	_bound->Draw(color);
 	//EnvironmentObject::Draw(color);
@@ -73,7 +73,7 @@ void HorizontalTestBarrier::Draw(COLOR_ARGB color)
 
 
 
-void HorizontalTestBarrier::Draw(SpriteData sd, COLOR_ARGB color)
+void TestBarrier::Draw(SpriteData sd, COLOR_ARGB color)
 {
 	_bound->Draw(sd,color);
 	//EnvironmentObject::Draw(sd,color);
