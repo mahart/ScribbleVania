@@ -46,7 +46,7 @@ class Player : public  GameObject
 		PlayerState _state;
 		float _fallAccel;
 		bool _onGround;
-		bool _slideOnLeft;
+		bool _onLeft;
 		void WallCollision(EnvironmentObject* obj);
 		void FloorCollision(EnvironmentObject* obj);
 		void DefaultCollision(GameObject* obj); 
