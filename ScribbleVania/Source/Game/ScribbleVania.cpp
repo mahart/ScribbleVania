@@ -10,9 +10,6 @@
 //=============================================================================
 ScribbleVania::ScribbleVania()
 {
-	//eo = new TestPlanetObj();
-	//background = new TestBackGround();
-	//player = new Player();
 	_manager = new ObjectManager(this);
 }
 
@@ -23,9 +20,6 @@ ScribbleVania::~ScribbleVania()
 {
     releaseAll();           // call onLostDevice() for every graphics item
 	SAFE_DELETE(_manager);
-	//SAFE_DELETE(eo);
-	//SAFE_DELETE(player);
-	//SAFE_DELETE(manager);
 }
 
 //=============================================================================
@@ -36,9 +30,6 @@ void ScribbleVania::initialize(HWND hwnd)
 {
     Game::initialize(hwnd); // throws GameError
 	_manager->Initialize();
-	//background->Initialize(this);
-	//eo->Initialize(this);
-	//player->Initialize(this);
     return;
 }
 
@@ -48,32 +39,23 @@ void ScribbleVania::initialize(HWND hwnd)
 void ScribbleVania::update()
 {
 	_manager->Update(frameTime);
-	/*Position playerp;
-	playerp.x = player->getX();
-	playerp.y = player->getY();
-
-	player->Update(frameTime);
-	eo->Update(frameTime);
-	if(eo->GetCollidable()->Intersects(player->GetCollidable()))
-	{
-		player->SetX(playerp.x);
-		player->SetY(playerp.y);
-	}
-
-	background->Update(frameTime);*/
 }
 
 //=============================================================================
 // Artificial Intelligence
 //=============================================================================
 void ScribbleVania::ai()
-{}
+{
+	_manager->AI();
+}
 
 //=============================================================================
 // Handle collisions
 //=============================================================================
 void ScribbleVania::collisions()
-{}
+{
+	_manager->Collision();
+}
 
 //=============================================================================
 // Render game items

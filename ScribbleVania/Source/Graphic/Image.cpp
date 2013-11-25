@@ -56,6 +56,12 @@ Image::~Image()
 bool Image::initialize(Graphics *g, int width, int height, int ncols,
                        TextureManager *textureM)
 {
+	return initialize(g,width,height,ncols,textureM,0.0f);
+}
+
+bool Image::initialize(Graphics *g, int width, int height, int ncols,
+TextureManager *textureM, float scale)
+{
     try{
         graphics = g;                               // the graphics object
         textureManager = textureM;                  // pointer to texture object
@@ -67,6 +73,13 @@ bool Image::initialize(Graphics *g, int width, int height, int ncols,
         if(height == 0)
             height = textureManager->getHeight();   // use full height of texture
         spriteData.height = height;
+		
+		if(scale==0) //use default scale
+		{
+			scale = 1.0f;
+		}
+
+		spriteData.scale=scale;
         cols = ncols;
         if (cols == 0)
             cols = 1;                               // if 0 cols use 1

@@ -45,6 +45,9 @@ const char TEST_BG[]="pictures\\ws_Abstract.jpg";
 const char PLANET_IMAGE[] = "pictures\\planet.png"; // picture of planet
 const char SHIP_IMAGE[]   = "pictures\\ship.png";   // spaceship
 const char BOX_IMAGE[] = "pictures\\BoundingBox.png";//Bounding box 
+const char LEDGE_IMAGE[] = "pictures\\LedgeBox.png";//LedgeBox
+const char SNAIL_IMAGE[] = "pictures\\super_metroid_yard2.png";//Snail Enemy
+const char OPEN_DOOR_IMAGE[] = "pictures\\OpenDoor.png";
 const char CIRCLE_IMAGE[] = "pictures\\BoundingCircle.png";
 
 // window
@@ -64,12 +67,22 @@ const float SCALE_RATE = 0.2f;              // % change per second
 const float SHIP_SPEED = 100.0f;            // pixels per second
 const float SHIP_SCALE = 1.5f;              // starting ship scale
 
+const int SNAIL_COLS=8;
+const float SNAIL_WIDTH= 50;
+const float SNAIL_HEIGHT = 44;
+const float SNAIL_ANIMATION_DELAY = 0.2f; 
+const int  SNAIL_START_FRAME_RIGHT = 0;
+const int SNAIL_END_FRAME_RIGHT = 7;
+const int SNAIL_START_FRAME_LEFT=8;
+const int SNAIL_END_FRAME_LEFT=15;
+
 // game
 const double PI = 3.14159265;
 const float FRAME_RATE  = 200.0f;               // the target frame rate (frames/sec)
 const float MIN_FRAME_RATE = 10.0f;             // the minimum frame rate
 const float MIN_FRAME_TIME = 1.0f/FRAME_RATE;   // minimum desired time for 1 frame
 const float MAX_FRAME_TIME = 1.0f/MIN_FRAME_RATE; // maximum time used in calculations
+const float GRAVITY = 981000;
 
 // key mappings
 // In this game simple constants are used for key mappings. If variables were used
@@ -80,5 +93,6 @@ const UCHAR ENTER_KEY    = VK_RETURN;       // Enter key
 const UCHAR PLAYER_LEFT_KEY    = VK_A;     // left arrow
 const UCHAR PLAYER_RIGHT_KEY   = VK_D;    // right arrow
 const UCHAR PLAYER_UP_KEY      = VK_W;       // up arrow
+const UCHAR PLAYER_JUMP_KEY	   = VK_SPACE;	//spacebar
 const UCHAR PLAYER_DOWN_KEY    = VK_S;     // down arrow
 

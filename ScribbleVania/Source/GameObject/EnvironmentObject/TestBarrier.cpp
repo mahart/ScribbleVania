@@ -1,33 +1,32 @@
 #include "../../../Header/GameObject/EnvironmentObject/TestBarrier.h"
 #include "../../../Header/Collidable/BoundingBox.h"
 
-TestBarrier::TestBarrier()
+TestBarrier::TestBarrier():EnvironmentObject()
 {
 	_velocity = ZERO_VECTOR;
-	_type = ObjectType::EnvironmentObject;
+	_subType = EnvSubType::Other;
 	_static=true;
-	_position.z=1;
 	_bound = new BoundingBox(0, this);
 }
 
-TestBarrier::TestBarrier(unsigned int ID, unsigned int height, unsigned int width, D3DXVECTOR3 position, ObjectType type)
+TestBarrier::TestBarrier(unsigned int ID, unsigned int height, unsigned int width, D3DXVECTOR3 position, EnvSubType type) : EnvironmentObject(ID)
 {
 	_velocity = ZERO_VECTOR;
-	_id =ID;
-	_type = type;
+	_subType = type;
 	_static=true;
-	_position.z=1;
+	
 	_bound = new BoundingBox(ID, this);
 	_height = height;
 	_width = width;
 	_position = position;
+
 }
 
 TestBarrier::~TestBarrier()
 {
+	EnvironmentObject::~EnvironmentObject();
 	SAFE_DELETE(_bound);
 	_bound=NULL;
-	EnvironmentObject::~EnvironmentObject();
 }
 
 bool TestBarrier::Initialize(Game* game)
@@ -38,6 +37,8 @@ bool TestBarrier::Initialize(Game* game)
 bool TestBarrier::Initialize(Game* game, D3DXVECTOR3 position)
 {
 	_game = game;
+	if(_position == ZERO_VECTOR)
+			_position = position;
 	//BOX_IMAGE
 	if(!objectTexture.initialize(_game->getGraphics(), BOX_IMAGE))
 	{
@@ -49,7 +50,7 @@ bool TestBarrier::Initialize(Game* game, D3DXVECTOR3 position)
 		{
 			return false;
 		}
-		//_position = position;
+		
 		if(!_bound->Initialize(_game, objectImage.getWidth(), objectImage.getHeight()))
 		{
 			return false;

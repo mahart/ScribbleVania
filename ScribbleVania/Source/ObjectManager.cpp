@@ -1,117 +1,8 @@
 #include "../Header/ObjectManager.h"
 #include "../Header/GameObject/Player/Player.h"
-#include "../Header/GameObject/EnvironmentObject/TestPlanetObj.h"
-#include "../Header/GameObject/EnvironmentObject/TestBackground.h"
-#include "../Header/GameObject/EnvironmentObject/TestBarrier.h"
+#include "../Header/Room/Room.h"
+#include "../Header/GameObject/Enemy.h"
 
-static void FakeFactory(unordered_map<unsigned int,GameObject*>* objects, ObjectManager* om, DepthTreeNode* drawTree)
-{
-	unsigned int id = om->GetNextID();
-	objects->insert(std::make_pair(id,new TestPlanetObj(id)));
-	if(drawTree == NULL)
-	{
-		drawTree = new DepthTreeNode(om->GetObjectByID(id)->GetPosition().z ,id);
-	}
-	else
-	{
-		drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	}
-
-	id = om->GetNextID();
-	objects->insert(std::make_pair(id, new TestBackGround(id)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	//FLOOR
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1),ObjectType::FloorEnvironment)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	
-	//LEFT WALL
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(GAME_WIDTH-25, 0,1),ObjectType::WallEnvironment)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	//RIGHT WALL
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(0, 0,1),ObjectType::WallEnvironment)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	//T
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,200, 25,D3DXVECTOR3(300, GAME_HEIGHT*0.9f-200,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(275, GAME_HEIGHT*0.9f-225,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	//END T
-
-	//E
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,200, 25,D3DXVECTOR3(400, GAME_HEIGHT*0.9f-200,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(400, GAME_HEIGHT*0.9f-225,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(400, GAME_HEIGHT*0.9f-100,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(400, GAME_HEIGHT*0.9f-25,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	//END E
-
-	//S
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(550, GAME_HEIGHT*0.9f-125,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 25,D3DXVECTOR3(550, GAME_HEIGHT*0.9f-100,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(550, GAME_HEIGHT*0.9f-75,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 25,D3DXVECTOR3(600, GAME_HEIGHT*0.9f-50,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(550, GAME_HEIGHT*0.9f-25,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	//END S 
-
-	//T
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,100, 25,D3DXVECTOR3(700, GAME_HEIGHT*0.9f-100,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-
-	id = om->GetNextID();
-	
-	objects->insert(std::make_pair(id, new TestBarrier(id,25, 75,D3DXVECTOR3(675, GAME_HEIGHT*0.9f-125,1),ObjectType::EnvironmentObject)));
-	drawTree->AddToNode(om->GetObjectByID(id)->GetPosition().z, id);
-	//END T
-
-}
 
 ObjectManager::ObjectManager()
 {
@@ -124,11 +15,17 @@ ObjectManager::ObjectManager(Game* game)
 	_game=game;
 
 	unsigned int nextID = GetNextID();
-	_player = new Player(nextID,D3DXVECTOR3(50,0,0));
+	_player = new Player(nextID,D3DXVECTOR3(50,0,0),this);
 	_objects.insert(std::make_pair(nextID,_player));
 	_drawTree = new DepthTreeNode(_player->GetPosition().z, nextID);
+	_factory = new ObjectFactory(this);
 
-	FakeFactory(&_objects,this, _drawTree);
+	this->room1 = _factory->MakeTestRoom1();
+	this->room2 = _factory->MakeTestRoom2();
+	this->room3 = _factory->MakeTestRoom3();
+
+	_treeLoaded=false;
+	LoadRoom(room2);
 }
 
 ObjectManager::~ObjectManager()
@@ -136,6 +33,38 @@ ObjectManager::~ObjectManager()
 	this->ShutDown();
 	_game = NULL;
 	_player = NULL;
+	_factory = NULL;
+}
+
+bool ObjectManager::LoadRoom(Room* room)
+{
+	if(_treeLoaded)
+	{
+		UnloadCurrentRoom();
+	}
+
+	room->Load(&this->_objects, this,this->_drawTree);
+	
+	_treeLoaded = true;
+	_roomChanged=true;
+	return false;
+}
+
+void ObjectManager::UnloadCurrentRoom()
+{
+	if(_drawTree==NULL)
+	{
+		return;
+	}
+
+	SAFE_DELETE(_drawTree);
+
+	Player* p = (Player*)_objects.at(0);
+
+	_objects.clear();
+	_objects.insert(std::make_pair(0,p));
+	_drawTree = new DepthTreeNode(p->GetPosition().z,p->GetID());
+	
 }
 
 bool ObjectManager::Initialize()
@@ -153,12 +82,47 @@ bool ObjectManager::Initialize()
 
 void ObjectManager::Update(float elapsedTime)
 {
+	if(_roomChanged)
+	{
+		_roomChanged=false;
+		return;
+	}
 	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin();
 		itr!=_objects.end(); itr++)
 	{
 		itr->second->Update(elapsedTime);
-	}
+	}	
+}
+
+void ObjectManager::AI()
+{
+	GameObject* obj;
+	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin();
+		itr!=_objects.end(); itr++)
+	{
+		obj = itr->second;
+		if(obj->GetObjectType()==ObjectType::Enemy)
+		{
+			((Enemy*)obj)->AI();
+		}
+		else if(obj->GetObjectType()==ObjectType::Boss)
+		{
+			//update boss
+		}
+	}	
+}
+
+void ObjectManager::Collision()
+{
+	BruteForceCollision();
+}
+
+void ObjectManager::BruteForceCollision()
+{
 	CollisionPair nextCol;
+	CollisionPair next;
+	GameObject *objA, *objB;
+	D3DXVECTOR3 va,vb;
 
 	//brute force collisions
 	for(unordered_map<unsigned int, GameObject*>::iterator itr1 = _objects.begin();
@@ -171,8 +135,8 @@ void ObjectManager::Update(float elapsedTime)
 				&& itr2->second->GetObjectType()!=ObjectType::Background 
 				&& itr1->second->GetID() != itr2->second->GetID())
 			{
-				if(!((itr1->second->GetObjectType() == ObjectType::EnvironmentObject || itr1->second->GetObjectType() == ObjectType::WallEnvironment || itr1->second->GetObjectType() == ObjectType::FloorEnvironment)
-					&& (itr2->second->GetObjectType() == ObjectType::EnvironmentObject ||itr2->second->GetObjectType() == ObjectType::WallEnvironment || itr2->second->GetObjectType() == ObjectType::FloorEnvironment) ))
+				if(!(itr1->second->GetObjectType() == ObjectType::EnvironmentObject 
+					&& itr2->second->GetObjectType() == ObjectType::EnvironmentObject))
 				{
 					if(itr1->second->GetObjectType() != ObjectType::EnvironmentObject && itr2->second->GetObjectType()!=ObjectType::Background)
 					{
@@ -184,14 +148,8 @@ void ObjectManager::Update(float elapsedTime)
 			}
 		}
 	}
-	BruteForceCollision();
-}
 
-void ObjectManager::BruteForceCollision()
-{
-	CollisionPair next;
-	GameObject *objA, *objB;
-	D3DXVECTOR3 va,vb;
+
 	while(!_collisionPairs.empty())
 	{
 		next = _collisionPairs.front();
@@ -201,6 +159,7 @@ void ObjectManager::BruteForceCollision()
 		
 		while(objA->GetCollidable()->Intersects(objB->GetCollidable()))
 		{
+
 			va = objA->GetVelocity();
 			vb = objB->GetVelocity();
 
@@ -215,6 +174,16 @@ void ObjectManager::BruteForceCollision()
 			
 			objA->ProcessCollision(objB);
 			objB->ProcessCollision(objA);
+
+			if(_roomChanged)
+			{
+				while(!_collisionPairs.empty())
+				{
+					_collisionPairs.pop();
+				}
+				Initialize();
+				return;
+			}
 		}
 	}
 }
@@ -255,6 +224,7 @@ void ObjectManager::ShutDown()
 		if(itr->second!=NULL)
 			itr->second->Shutdown();
 	}
+	SAFE_DELETE(_factory);
 }
 
 void ObjectManager::Reset()

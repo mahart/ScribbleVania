@@ -1,27 +1,20 @@
 #pragma once
 #define WIN32_LEAN_AND_MEAN
-
 #include "GameObject.h"
-#include "../Graphic/Image.h"
-#include "../Graphic/TextureManager.h"
 
-typedef enum class EnvSubType{
-	Wall,
-	Floor,
-	Ceiling,
-	Ledge,
-	Door,
-	Background,
+typedef enum class EnemyType
+{
+	SnailEnemy,
 	Other
-} EnvSubType;
+} EnemyType;
 
-class EnvironmentObject : public  GameObject
+class Enemy : public GameObject
 {
 	public:
-		EnvironmentObject();
-		EnvironmentObject(unsigned int ID);
-		~EnvironmentObject();
-
+		Enemy();
+		Enemy(unsigned int ID);
+		~Enemy();
+	
 		//Draw Will change when the graphics component is replaced
 		virtual void Draw(COLOR_ARGB color = graphicsNS::WHITE);
 
@@ -29,22 +22,26 @@ class EnvironmentObject : public  GameObject
 		//   The current SpriteData.rect is used to select the texture.
 		virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE); // draw with SpriteData using color as filter
 
+		//Used to fix position after collision, if applicable
+		virtual void ProcessCollision(GameObject* obj)=0;
+
 		//Startup and Shutdown
-		virtual void Shutdown();
 		virtual bool Initialize(Game* game);
 		virtual bool Initialize(Game* game, D3DXVECTOR3 position);
+		virtual void Shutdown();
 
 		virtual void Reset();
+		
+		//Getters
+		virtual D3DXVECTOR3 GetCenter();
 		virtual int GetWidth();
 		virtual int GetHeight();
-		virtual D3DXVECTOR3 GetCenter();
-		//getter
-		bool IsStatic() {return _static;}
-		EnvSubType GetSubType(){return _subType;}
+		virtual void AI()=0;
+		EnemyType GetEnemyType(){return _enemyType;}
 	protected:
-		bool _static;
-		EnvSubType _subType;
+		EnemyType _enemyType;
 		Image objectImage;
 		TextureManager objectTexture;
-	private:
+	private:	
 };
+

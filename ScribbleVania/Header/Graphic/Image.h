@@ -158,6 +158,9 @@ class Image
     virtual bool Image::initialize(Graphics *g, int width, int height, 
                                     int ncols, TextureManager *textureM);
 
+	virtual bool Image::initialize(Graphics *g, int width, int height, 
+                                    int ncols, TextureManager *textureM,float scale);
+
     // Flip image horizontally (mirror)
     virtual void flipHorizontal(bool flip)  {spriteData.flipHorizontal = flip;}
 

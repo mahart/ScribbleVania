@@ -5,21 +5,27 @@
 #include "../../Graphic/TextureManager.h"
 #include "../../ObjectManager.h"
 #include "../../Collidable/BoundingBox.h"
+#include "../EnvironmentObject/Door.h"
+#include "../../Room/Room.h"
+
 typedef enum class PlayerState
 {
-	walking,
-	sliding,
-	jumping
+	Walking,
+	Sliding,
+	Jumping,
+	Hanging
 } PlayerState;
+
 
 class Player : public  GameObject
 {
 	public:
 		Player();
 		Player(unsigned int id);
-		Player(unsigned int id, D3DXVECTOR3 position);
+		Player(unsigned int id, D3DXVECTOR3 position, ObjectManager* om);
 		virtual ~Player();
 
+		void Damage(float dmg){};
 		void Draw(COLOR_ARGB color = graphicsNS::WHITE);
 		// Draw this image using the specified SpriteData.
 		//   The current SpriteData.rect is used to select the texture.
@@ -30,8 +36,8 @@ class Player : public  GameObject
 		D3DXVECTOR3 GetCenter();
 		//Startup and Shutdown
 		bool Initialize(Game* game);
-		bool Initialize(Game* game, D3DXVECTOR3 position);
-
+		bool Initialize(Game* game, D3DXVECTOR3 distance);
+		void Bounce(D3DXVECTOR3 direction);
 		void Shutdown();
 		void Reset();
 		int GetWidth();
@@ -43,14 +49,22 @@ class Player : public  GameObject
 	private:
 		int _jumpCount;
 		int _jumpMax;
+		GameObject* _touchedObj;
+		bool _climbing;
 		PlayerState _state;
 		float _fallAccel;
-		bool _onGround;
 		bool _onLeft;
-		void WallCollision(EnvironmentObject* obj);
-		void FloorCollision(EnvironmentObject* obj);
-		void DefaultCollision(GameObject* obj); 
+		ObjectManager* _om;
+		void EnvironmentCollision(EnvironmentObject* obj);
+			void WallCollision(EnvironmentObject* obj);
+			void FloorCollision(EnvironmentObject* obj);
+			void LedgeCollision(EnvironmentObject* obj);
+			void DoorCollision(Door* door);
+		void DefaultCollision(GameObject* obj);
+
+		void UpdateHanging(float elapsedTime, Input* input);
 		void UpdateJumping(float elapsedTime,Input* input);
 		void UpdateWalking(float elapsedTime,Input* input);
 		void UpdateSliding(float elapsedTime,Input* input);
+
 };

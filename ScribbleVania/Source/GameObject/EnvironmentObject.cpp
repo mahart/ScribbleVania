@@ -30,6 +30,8 @@ bool EnvironmentObject::Initialize(Game* game, D3DXVECTOR3 position)
 void EnvironmentObject::Shutdown()
 {
 	objectTexture.onLostDevice();
+	if(_bound!=NULL)
+		_bound->Shutdown();
 }
 
 
@@ -46,6 +48,8 @@ void EnvironmentObject::Draw(SpriteData sd, COLOR_ARGB color)
 void EnvironmentObject::Reset()
 {
 	objectTexture.onResetDevice();
+	if(_bound!=NULL)
+		_bound->Reset();
 }
 
 int EnvironmentObject::GetHeight()
@@ -60,9 +64,5 @@ int EnvironmentObject::GetWidth()
 
 D3DXVECTOR3 EnvironmentObject::GetCenter()
 {
-	D3DXVECTOR3 temp;
-	temp.x = objectImage.getCenterX();
-	temp.y = objectImage.getCenterY();
-	temp.z = this->_position.z;
-	return temp;
+	return D3DXVECTOR3(objectImage.getCenterX(),objectImage.getCenterY(),this->_position.z);
 }

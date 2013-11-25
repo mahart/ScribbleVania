@@ -8,6 +8,9 @@
 #include "GameObject/EnvironmentObject.h"
 #include "Game/Game.h"
 #include "DataStruct/DepthTreeNode.h"
+#include "Room/Room.h"
+#include "GameObject\ObjectFactory.h"
+
 class Player;
 using namespace std;
 
@@ -23,9 +26,12 @@ class ObjectManager
 		ObjectManager();
 		ObjectManager(Game* game);
 		~ObjectManager();
-
+		
 		bool Initialize();
 		void Update(float elapsedTime);
+		void AI();
+		void Collision();
+
 		void Draw();
 		void ShutDown();
 		void Reset();
@@ -33,7 +39,12 @@ class ObjectManager
 		GameObject* GetObjectByID(unsigned int ID);
 		//loadlevel
 		//switchlevelv
-		
+		bool LoadRoom(Room* room);
+		void UnloadCurrentRoom();
+
+		Room* room1;
+		Room* room2;
+		Room* room3;
 	protected:
 		//loadroom
 		//switchroom
@@ -47,8 +58,10 @@ class ObjectManager
 		void Draw(DepthTreeNode*node);
 		void Draw(vector<unsigned int> objects);
 		queue<CollisionPair> _collisionPairs;
-
+		
 		void BruteForceCollision();
 	private:
-		
+		bool _roomChanged;
+		bool _treeLoaded;
+		ObjectFactory* _factory;
 };

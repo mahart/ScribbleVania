@@ -13,8 +13,6 @@ typedef enum class ObjectType
 	EnvironmentObject=3,
 	Boss=4,
 	Enemy=5,
-	WallEnvironment,
-	FloorEnvironment,
 	Other
 } ObjecType;
 
