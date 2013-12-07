@@ -12,18 +12,18 @@ EnvironmentObject::EnvironmentObject(unsigned int ID) : GameObject(ID)
 
 EnvironmentObject::~EnvironmentObject()
 {
-	_game=NULL; 
+	_om=NULL; 
 	this->Shutdown();
 }
 
-bool EnvironmentObject::Initialize(Game* game)
+bool EnvironmentObject::Initialize(ObjectManager* om)
 {
-	return EnvironmentObject::Initialize(game, ZERO_VECTOR);
+	return EnvironmentObject::Initialize(om, ZERO_VECTOR);
 }
 
-bool EnvironmentObject::Initialize(Game* game, D3DXVECTOR3 position)
+bool EnvironmentObject::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 {
-	_game=game;
+	_om=om;
 	return true;
 }
 
@@ -54,12 +54,17 @@ void EnvironmentObject::Reset()
 
 int EnvironmentObject::GetHeight()
 {
-	return objectImage.getHeight();
+	return objectImage.getHeight()*objectImage.getScale();
 }
 
 int EnvironmentObject::GetWidth()
 {
-	return objectImage.getWidth();
+	return objectImage.getWidth()*objectImage.getScale();
+}
+
+float EnvironmentObject::GetScale()
+{
+	return objectImage.getScale();
 }
 
 D3DXVECTOR3 EnvironmentObject::GetCenter()

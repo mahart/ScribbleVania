@@ -6,7 +6,7 @@
 #include "../GameObject/GameObject.h"
 
 using namespace std;
-class ObjectManager;
+//class ObjectManager;
 class DepthTreeNode;
 
 class Room
@@ -16,7 +16,7 @@ class Room
 		Room(vector<GameObject*>* objs);
 		~Room();
 
-		bool Initialize(Game* game);
+		bool Initialize(ObjectManager* om);
 		void Load(unordered_map<unsigned int,GameObject*>* objects, ObjectManager* om, DepthTreeNode* drawTree);
 	protected:
 	private:

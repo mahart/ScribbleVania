@@ -1,4 +1,5 @@
 #include "../../../Header/GameObject/EnvironmentObject/TestBackGround.h"
+#include "../../../Header/ObjectManager.h"
 
 TestBackGround::TestBackGround() : EnvironmentObject()
 {
@@ -19,23 +20,26 @@ TestBackGround::~TestBackGround()
 	EnvironmentObject::~EnvironmentObject();
 }
 
-bool TestBackGround::Initialize(Game* game)
+bool TestBackGround::Initialize(ObjectManager* om)
 {
-	return TestBackGround::Initialize(game,ZERO_VECTOR);
+	return TestBackGround::Initialize(om,ZERO_VECTOR);
 }
 
 
-bool TestBackGround::Initialize(Game* game, D3DXVECTOR3 position)
+bool TestBackGround::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 {
-	_game=game;
+	_om=om;
 	
-	if(!objectTexture.initialize(_game->getGraphics(),TEST_BG))
+	if(!objectTexture.initialize(_om->GetGraphics(),TEST_BG_2))
 	{
 		return false;
 	}
 	else
 	{
-		if(! objectImage.initialize(_game->getGraphics(),0, 0,0,&objectTexture))
+		float xScale = (float)GAME_WIDTH/objectTexture.getWidth();
+		float yScale = (float)GAME_HEIGHT/objectTexture.getHeight();
+		float scale = (xScale+yScale)/2;
+		if(! objectImage.initialize(_om->GetGraphics(),0, 0,0,&objectTexture,yScale))
 		{
 			return false;
 		}

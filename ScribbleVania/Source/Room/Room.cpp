@@ -32,12 +32,12 @@ void Room::Load(unordered_map<unsigned int,GameObject*>* objects, ObjectManager*
 	}
 }
 
-bool Room::Initialize(Game *game)
+bool Room::Initialize(ObjectManager *om)
 {
 	bool result = true;
 	for(unsigned int i =0; i<_objects->size(); i++)
 	{
-		result = result && _objects->at(i)->Initialize(game);
+		result = result && _objects->at(i)->Initialize(om);
 	}
 	_isLoaded=false;
 	return result;

@@ -1,8 +1,10 @@
 #include "../../../Header/GameObject/Player/Player.h"
+#include "../../../Header/ObjectManager.h"
+#include "../../../Header/GameObject/Projectile.h"
 
 Player::Player() : GameObject()
 {
-	_accel = 250000;
+	_accel = PLAYER_ACCEL;
 	_jumpCount =1;
 	_jumpMax = 1;
 	_fallAccel = GRAVITY;
@@ -14,11 +16,12 @@ Player::Player() : GameObject()
 	_type = ObjectType::Player;
 	_bound = new BoundingBox(0, this);
 	_climbing = false;
+	_shotTimer=0;
 }
 
 Player::Player(unsigned int id) : GameObject(id)
 {
-	_accel = 250000;
+	_accel = PLAYER_ACCEL;
 	_fallAccel = GRAVITY;
 	_jumpCount=1;
 	_jumpMax=1;
@@ -30,11 +33,12 @@ Player::Player(unsigned int id) : GameObject(id)
 	_type = ObjectType::Player;
 	_bound = new BoundingBox(id,this);
 	_climbing = false;
+	_shotTimer=0;
 }
 
 Player::Player(unsigned int id,D3DXVECTOR3 position, ObjectManager* om):GameObject(id)
 {
-	_accel = 250000;
+	_accel = PLAYER_ACCEL;
 	_jumpCount =1;
 	_jumpMax = 1;
 	_onLeft = true;
@@ -47,43 +51,50 @@ Player::Player(unsigned int id,D3DXVECTOR3 position, ObjectManager* om):GameObje
 	_bound = new BoundingBox(id,this);
 	_climbing = false;
 	_om = om;
+	_shotTimer=0;
 }
 
 Player::~Player()
 {
-	_game=NULL; 
+	Shutdown();
+	_om=NULL; 
 	 SAFE_DELETE(_bound);
 	_bound=NULL;
 }
 
-bool Player::Initialize(Game* game)
+bool Player::Initialize(ObjectManager* om)
 {
-	return Player::Initialize(game, _position==NULL?ZERO_VECTOR:_position);
+	return Player::Initialize(om, _position==NULL?ZERO_VECTOR:_position);
 }
 
-bool Player::Initialize(Game* game, D3DXVECTOR3 position)
+bool Player::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 {
-	_game = game;
+	_om = om;
 	_position = position;
 
-	if(!playerTexture.initialize(_game->getGraphics(), SHIP_IMAGE))
+	if(!playerTexture.initialize(_om->GetGraphics(), SHIP_IMAGE))
 	{
 		return false;
 	}
 	else
 	{
-		if(!playerImage.initialize(_game->getGraphics(), SHIP_WIDTH, SHIP_HEIGHT, SHIP_COLS, &playerTexture))
+		if(!playerImage.initialize(_om->GetGraphics(), SHIP_WIDTH, SHIP_HEIGHT, SHIP_COLS, &playerTexture,1.0f))
 		{
 			return false;
 		}
 
-			if(!_bound->Initialize(game, this->GetWidth(), this->GetHeight()))
-			{
-				return false;
-			}
+		if(!_bound->Initialize(_om,(unsigned int)(GetWidth()*playerImage.getScale()),(unsigned int)(GetHeight()*playerImage.getScale())))
+		{
+			return false;
+		}
 	}
+
+	playerImage.setFrames(SHIP_START_FRAME, SHIP_END_FRAME);
+	playerImage.setCurrentFrame(SHIP_START_FRAME);
+	playerImage.setFrameDelay(SHIP_ANIMATION_DELAY);
 	return true;
 }
+
 void Player::Shutdown()
 {
 	_bound->Shutdown();
@@ -94,10 +105,36 @@ void Player::Shutdown()
 
 void Player::Update(float elapsedTime)
 {
-	//Update image frame if necessary
+	Input* input = _om->GetInput();
+	if(input->isKeyDown(PLAYER_UP_KEY))
+	{   
+		//Looking up
+		if(playerImage.isFlippedHorizontal()) //&left
+		{
+			playerImage.setDegrees(45.0f);
+		}
+		else
+		{
+			playerImage.setDegrees(315.0f); //&Right
+		}
+	}
+	else if(input->isKeyDown(PLAYER_DOWN_KEY)) 
+	{
+		//Looking Downs
+		if(playerImage.isFlippedHorizontal()) //&left
+		{
+			playerImage.setDegrees(315.0f);
+		}
+		else
+		{
+			playerImage.setDegrees(45.0f); //&right
+		}
+	}
+	else
+	{
+		playerImage.setDegrees(0.0f);
+	}
 
-	Input* input = _game->getInput();
-	
 	switch(_state)
 	{
 		case PlayerState::Jumping:
@@ -134,29 +171,37 @@ void Player::Update(float elapsedTime)
 	  if (_position.x > GAME_WIDTH)               // if off screen right
             _position.x = (float)-playerImage.getWidth();     // position off screen left
 
-	_position.x += _velocity.x * elapsedTime;
-	_position.y += _velocity.y * elapsedTime;
-
+	_position += _velocity * elapsedTime;
 	
 
 	playerImage.setX(_position.x);
 	playerImage.setY(_position.y);
+
     playerImage.update(elapsedTime);
 	_bound->Update(elapsedTime);
+
 	input=NULL;
 }
 
 void Player::UpdateJumping(float elapsedTime,Input* input)
 {
 	_velocity.y += _fallAccel*elapsedTime*elapsedTime;
+	_shotTimer-=elapsedTime;
+	if(input->isKeyDown(PLAYER_SHOOT_KEY) && _shotTimer<=0)
+	{
+		_om->AddObject(new BoringProjectile(_om->GetNextID(), this));
+		_shotTimer=0.25f;
+	}
 
 	if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
 	{
 		_velocity.x += _accel*elapsedTime*elapsedTime*0.25f;
+		playerImage.flipHorizontal(false);
 	}
 	if(input->isKeyDown(PLAYER_LEFT_KEY))             // if accel left
 	{
 		_velocity.x -= _accel*elapsedTime*elapsedTime*0.25f;
+		playerImage.flipHorizontal(true);
 	}
 	if(input->isKeyDown(PLAYER_JUMP_KEY))               // if accel up
 	{
@@ -166,18 +211,29 @@ void Player::UpdateJumping(float elapsedTime,Input* input)
 			_jumpCount++;
 		}
 	}
+
+
 }
 
 void Player::UpdateWalking(float elapsedTime,Input* input)
 {
 	_velocity.y += _fallAccel*elapsedTime*elapsedTime;
+	_shotTimer-=elapsedTime;
+	if(input->isKeyDown(PLAYER_SHOOT_KEY) && _shotTimer<=0)
+	{
+		_om->AddObject(new BoringProjectile(_om->GetNextID(), this));
+		_shotTimer=0.25f;
+	}
+
 	if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
 		{
 			_velocity.x += _accel*elapsedTime*elapsedTime;
+			playerImage.flipHorizontal(false);
 		}
 		if(input->isKeyDown(PLAYER_LEFT_KEY))             // if accel left
 		{
 			_velocity.x -= _accel*elapsedTime*elapsedTime;
+			playerImage.flipHorizontal(true);
 		}
 
 		if(input->isKeyDown(PLAYER_JUMP_KEY))               // if accel up
@@ -217,14 +273,16 @@ void Player::UpdateSliding(float elapsedTime,Input* input)
 	{
 		if(_onLeft)
 		{
-			this->_velocity.x=+250;	
+			_velocity.x=+250;	
+			playerImage.flipHorizontal(false);
 		}
 		else
 		{
-			this->_velocity.x=-250;
+			_velocity.x=-250;
+			playerImage.flipHorizontal(true);
 		}
 
-		this->_velocity.y =-350;
+		_velocity.y =-350;
 		_jumpCount=0;
 		_state = PlayerState::Jumping;
 	}
@@ -250,10 +308,10 @@ void Player::UpdateSliding(float elapsedTime,Input* input)
 
 void Player::UpdateHanging(float elapsedTime, Input* input)
 {
-	this->_velocity.y =0;
+	_velocity.y =0;
 	if(_climbing)
 	{
-		if(this->_position.y+this->GetHeight() > _touchedObj->GetPosition().y-2)
+		if(_position.y+GetHeight() > _touchedObj->GetPosition().y-2)
 		{
 			_velocity.y=-200;
 			_velocity.x=0;
@@ -264,7 +322,8 @@ void Player::UpdateHanging(float elapsedTime, Input* input)
 			_velocity.y=0;
 			if(_onLeft)
 			{
-				if(this->_position.x + this->GetWidth() > _touchedObj->GetPosition().x + _touchedObj->GetWidth())
+				playerImage.flipHorizontal(true);
+				if(_position.x + GetWidth() > _touchedObj->GetPosition().x + _touchedObj->GetWidth())
 				{
 					_velocity.x=-200;
 					return;
@@ -272,7 +331,8 @@ void Player::UpdateHanging(float elapsedTime, Input* input)
 			}
 			else
 			{
-				if(this->_position.x < _touchedObj->GetPosition().x)
+				playerImage.flipHorizontal(false);
+				if(_position.x < _touchedObj->GetPosition().x)
 				{
 					_velocity.x=200;
 					return;
@@ -289,14 +349,14 @@ void Player::UpdateHanging(float elapsedTime, Input* input)
 		{
 			if(_onLeft)
 			{
-				this->_velocity.x=+250;	
+				_velocity.x=+250;	
 			}
 			else
 			{
-				this->_velocity.x=-250;
+				_velocity.x=-250;
 			}
 
-			this->_velocity.y =-350;
+			_velocity.y =-350;
 			_jumpCount=0;
 			_state = PlayerState::Jumping;
 		}
@@ -331,14 +391,36 @@ void Player::UpdateHanging(float elapsedTime, Input* input)
 	}
 }
 
+D3DXVECTOR3 Player::ExitObject(GameObject* obj)
+{
+	D3DXVECTOR3 diff = GetCenter()-obj->GetCollidable()->GetNearestPoint(GetCenter());
+	diff.z=0;
+	D3DXVECTOR3 direction;
+
+	if(diff.x==0 && diff.y==0)
+	{
+		D3DXVECTOR3 temp(_velocity.x *-1, _velocity.y *-1,0);
+		D3DXVec3Normalize(&direction, &temp);
+	}
+	else
+	{
+		D3DXVec3Normalize(&direction,&diff);
+	}
+
+	while(_bound->Intersects(obj->GetCollidable()))
+	{
+		_position+=direction*0.1f;
+	}
+	return direction;
+}
+
 void Player::ProcessCollision(GameObject* obj)
 {
-	//_state = PlayerState::walking;
-
+	D3DXVECTOR3 dir = ExitObject(obj);
 	switch (obj->GetObjectType())
 	{
 		case ObjectType::EnvironmentObject:
-			EnvironmentCollision((EnvironmentObject*)obj);
+			EnvironmentCollision((EnvironmentObject*)obj, dir);
 			break;
 		default:
 			DefaultCollision(obj);
@@ -346,18 +428,57 @@ void Player::ProcessCollision(GameObject* obj)
 	}
 }
 
-void Player::EnvironmentCollision(EnvironmentObject* obj)
+
+void Player::DefaultCollision(GameObject* obj)
+{
+	/*D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
+	diff.z=0;
+	D3DXVECTOR3 direction;
+	
+	if(diff.x==0 && diff.y==0)
+	{
+		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
+		D3DXVec3Normalize(&direction, &temp);
+	}
+	else
+	{
+		D3DXVec3Normalize(&direction,&diff);
+	}*/
+
+	bool vertNeg = _velocity.y <0;
+	bool horzNeg = _velocity.x <0;
+	/*while(this->_bound->Intersects(obj->GetCollidable()))
+	{
+		this->_position+=direction*0.1f;
+		*/
+	if(vertNeg && _velocity.y!=0)
+	{
+		_velocity.y+=10;
+		_velocity.y= _velocity.y>0?0:_velocity.y;
+	}
+	else if(_velocity.y!=0)
+	{
+		_velocity.y-=10;
+		_velocity.y = _velocity.y<0?0:_velocity.y;
+	}
+
+	if(_velocity.y==0)
+		_state=PlayerState::Walking;
+	//}
+}
+
+void Player::EnvironmentCollision(EnvironmentObject* obj, D3DXVECTOR3 direction)
 {
 	switch(obj->GetSubType())
 	{
 		case EnvSubType::Wall:
-			WallCollision(obj);
+			WallCollision(obj, direction);
 			break;
 		case EnvSubType::Floor:
 			FloorCollision(obj);
 			break;
 		case EnvSubType::Ledge:
-			LedgeCollision(obj);
+			LedgeCollision(obj, direction);
 			break;
 		case EnvSubType::Door:
 			DoorCollision((Door*)obj);
@@ -370,47 +491,12 @@ void Player::EnvironmentCollision(EnvironmentObject* obj)
 	}
 }
 
-void Player::DefaultCollision(GameObject* obj)
-{
-	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
-	diff.z=0;
-	D3DXVECTOR3 direction;
 
-	if(diff.x==0 && diff.y==0)
-	{
-		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
-		D3DXVec3Normalize(&direction, &temp);
-	}
-	else
-	{
-		D3DXVec3Normalize(&direction,&diff);
-	}
 
-	bool vertNeg = this->_velocity.y <0;
-	bool horzNeg = this->_velocity.x <0;
-	while(this->_bound->Intersects(obj->GetCollidable()))
-	{
-		this->_position+=direction*0.1f;
-
-		if(vertNeg && this->_velocity.y!=0)
-		{
-			this->_velocity.y+=10;
-			this->_velocity.y= this->_velocity.y>0?0:this->_velocity.y;
-		}
-		else if(this->_velocity.y!=0)
-		{
-			this->_velocity.y-=10;
-			this->_velocity.y = this->_velocity.y<0?0:this->_velocity.y;
-		}
-
-		if(this->_velocity.y==0)
-			_state=PlayerState::Walking;
-	}
-}
 
 void Player::FloorCollision(EnvironmentObject* obj)
 {
-	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
+	/*D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
 	diff.z=0;
 	D3DXVECTOR3 direction;
 
@@ -430,17 +516,19 @@ void Player::FloorCollision(EnvironmentObject* obj)
 	while(this->_bound->Intersects(obj->GetCollidable()))
 	{
 		this->_position+=direction*0.1f;
-	}
-	this->_velocity.y=0;
-	if(this->_position.y < obj->GetPosition().y)
+	}*/
+
+	_velocity.y=0;
+	if(_position.y < obj->GetPosition().y)
 	{	
 		_state=PlayerState::Walking;
 	}
 	
 }
 
-void Player::WallCollision(EnvironmentObject* obj)
+void Player::WallCollision(EnvironmentObject* obj, D3DXVECTOR3 direction)
 {
+	/*
 	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
 	diff.z=0;
 	D3DXVECTOR3 direction;
@@ -454,11 +542,14 @@ void Player::WallCollision(EnvironmentObject* obj)
 	{
 		D3DXVec3Normalize(&direction,&diff);
 	}
+	*/
 
+	/*
 	while(this->_bound->Intersects(obj->GetCollidable()))
 	{
 		this->_position+=direction*0.1f;
-	}
+	}*/
+
 	_velocity.x=0;
 	_velocity.y=0;
 
@@ -473,12 +564,12 @@ void Player::WallCollision(EnvironmentObject* obj)
 	_state=PlayerState::Sliding;
 }
 
-void Player::LedgeCollision(EnvironmentObject* obj)
+void Player::LedgeCollision(EnvironmentObject* obj,D3DXVECTOR3 direction)
 {
-	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
+	/*D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
 	diff.z=0;
 	D3DXVECTOR3 direction;
-	_touchedObj = obj;
+	
 	if(diff.x==0 && diff.y==0)
 	{
 		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
@@ -493,9 +584,11 @@ void Player::LedgeCollision(EnvironmentObject* obj)
 	{
 		this->_position+=direction*0.1f;
 	}
-	
+	*/
+
+	_touchedObj = obj;
 	_velocity.y=0;
-	if(this->_position.y < obj->GetCenter().y)
+	if(_position.y < obj->GetCenter().y)
 	{
 		_state = PlayerState::Hanging;
 		_velocity.x=0;
@@ -508,10 +601,12 @@ void Player::LedgeCollision(EnvironmentObject* obj)
 	if(direction.x<0)
 	{
 		_onLeft=false;
+		playerImage.flipHorizontal(true);
 	}
 	else
 	{
 		_onLeft=true;
+		playerImage.flipHorizontal(false);
 	}
 }
 
@@ -522,9 +617,9 @@ void Player::DoorCollision(Door* door)
 
 	Room* r = door->GetRoom();
 	_om->LoadRoom(door->GetRoom());
-	this->_position.x = door->GetExit().x;
-	this->_position.y = door->GetExit().y;
-	this->_velocity = ZERO_VECTOR;
+	_position.x = door->GetExit().x;
+	_position.y = door->GetExit().y;
+	_velocity = ZERO_VECTOR;
 }
 
 void Player::Draw(COLOR_ARGB color)
@@ -535,7 +630,7 @@ void Player::Draw(COLOR_ARGB color)
 
 void Player::Draw(SpriteData sd, COLOR_ARGB color)
 {
-	_bound->Draw(sd,color);
+	//_bound->Draw(sd,color);
 	playerImage.draw(sd,color);
 }
 
@@ -555,22 +650,64 @@ int Player::GetHeight()
 	return playerImage.getHeight();
 }
 
+float Player::GetScale()
+{
+	return playerImage.getScale();
+}
 D3DXVECTOR3 Player::GetCenter()
 {
-	D3DVECTOR temp;
-	temp.x = playerImage.getCenterX();
-	temp.y = playerImage.getCenterY();
-	temp.z= this->GetPosition().z;
-	return temp;
+	return D3DXVECTOR3(playerImage.getCenterX(),playerImage.getCenterY(), _position.z);
 }
 
-void Player::Bounce(D3DXVECTOR3 distance)
+void Player::DBounce(D3DXVECTOR3 distance)
 {
-	this->_position+=distance;
+	_position+=distance;
 	
 	if(distance.x != 0)
-		this->_velocity.x=0;
+		_velocity.x=0;
 
 	if(distance.y!=0)
-		this->_velocity.y=0;
+		_velocity.y=0;
+}
+
+void Player::VBounce(D3DXVECTOR3 velocity)
+{
+	_velocity+=velocity;
+}
+
+D3DXVECTOR3 Player::GetDirection()
+{
+	float degrees = playerImage.getDegrees();
+	if(playerImage.isFlippedHorizontal())
+	{
+		//look left
+		if(degrees==45)
+		{
+			return D3DXVECTOR3(-1,-1,0);
+		}
+		else if(degrees==0)
+		{
+			return D3DXVECTOR3(-1,0,0);
+		}
+		else
+		{
+			return D3DXVECTOR3(-1,1,0);
+		}
+	}
+	else
+	{
+		//look right
+		if(degrees==45)
+		{
+			return D3DXVECTOR3(1,1,0);
+		}
+		else if(degrees==0)
+		{
+			return D3DXVECTOR3(1,0,0);
+		}
+		else
+		{
+			return D3DXVECTOR3(1,-1,0);
+		}
+	}
 }

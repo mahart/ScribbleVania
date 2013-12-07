@@ -1,6 +1,7 @@
 #include "../../Header/Collidable/BoundingCircle.h"
 #include "../../Header/GameObject/GameObject.h"
 #include "../../Header/Collidable/BoundingBox.h"
+#include "../../Header/ObjectManager.h"
 
 BoundingCircle::BoundingCircle(unsigned int ownerId, GameObject* ownerObject)
 {
@@ -13,23 +14,25 @@ BoundingCircle::~BoundingCircle()
 	_owner = NULL;
 }
 
-bool BoundingCircle::Initialize(Game* game, int radius, int UNUSED)
+bool BoundingCircle::Initialize(ObjectManager* om, int radius, int UNUSED)
 {
 	D3DXVECTOR3 p;
-	_radius=radius;
-	if(!_texture.initialize(game->getGraphics(), CIRCLE_IMAGE))
+	float scale;
+	if(!_texture.initialize(om->GetGraphics(), CIRCLE_IMAGE))
 	{
 		return false;
 	}
 	else
 	{
-		if(!_image.initialize(game->getGraphics(),64,64,0,&_texture))
+		float xScale = (_owner->GetWidth()*_owner->GetScale())/64;
+		float yScale = (_owner->GetHeight()*_owner->GetScale())/64;
+		scale = (xScale+yScale)/2;
+		if(!_image.initialize(om->GetGraphics(),64,64,0,&_texture, scale))
 		{
 			return false;
 		}
 	}
-	float scale = (float)radius/32;
-	_image.setScale(scale);
+	_radius=radius;
 	p=_owner->GetPosition();
 	_image.setX(p.x);
 	_image.setY(p.y);
@@ -89,14 +92,16 @@ bool BoundingCircle::Intersects(Collidable* c)
 		default:
 			return false;
 	}
+
 }
 
 bool BoundingCircle::IntersectC(BoundingCircle* c)
 {
 	float distX = this->GetCenter().x - c->GetCenter().x;
 	float distY = this->GetCenter().y - c->GetCenter().y;
-	float sqrDist = (distX*distX) + (distY*distY);
-	return sqrDist < ((this->Radius() + c->Radius()) * (this->Radius() + c->Radius()));
+	float dist2 = distX*distX + distY*distY;
+	float r2= (this->Radius() + c->Radius())*(this->Radius() + c->Radius());
+	return dist2 <= r2;//((this->Radius() + c->Radius()) * (this->Radius() + c->Radius()));
 }
 
 bool BoundingCircle::IntersectB(BoundingBox* b)
@@ -134,7 +139,8 @@ bool BoundingCircle::IntersectB(BoundingBox* b)
 	float distanceY = this->GetCenter().y - closestY;
 
 	float distanceSqr = (distanceX * distanceX) + (distanceY * distanceY);
-	return distanceSqr < (this->Radius() * this->Radius());
+	float rSqr = this->Radius() * this->Radius();
+	return distanceSqr <= (this->Radius() * this->Radius());
 }
 
 D3DXVECTOR3 BoundingCircle::GetNearestPoint(D3DXVECTOR3 center)

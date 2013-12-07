@@ -1,5 +1,6 @@
 #include "../../../Header/GameObject/EnvironmentObject/Ledge.h"
 #include "../../../Header/Collidable/BoundingBox.h"
+#include "../../../Header/ObjectManager.h"
 
 Ledge::Ledge()
 {
@@ -32,29 +33,29 @@ Ledge::~Ledge()
 	EnvironmentObject::~EnvironmentObject();
 }
 
-bool Ledge::Initialize(Game* game)
+bool Ledge::Initialize(ObjectManager* om)
 {
-	return Ledge::Initialize(game, ZERO_VECTOR);
+	return Ledge::Initialize(om, ZERO_VECTOR);
 }
 
-bool Ledge::Initialize(Game* game, D3DXVECTOR3 position)
+bool Ledge::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 {
-	_game = game;
+	_om = om;
 
 	if(_position == ZERO_VECTOR)
 		_position = position;
 
-	if(!objectTexture.initialize(_game->getGraphics(), LEDGE_IMAGE))
+	if(!objectTexture.initialize(_om->GetGraphics(), LEDGE_IMAGE))
 	{
 		return false;
 	}
 	else
 	{
-		if(!objectImage.initialize(_game->getGraphics(), _height, _width,0,&objectTexture))
+		if(!objectImage.initialize(_om->GetGraphics(), _height, _width,0,&objectTexture))
 		{
 			return false;
 		}
-		if(!_bound->Initialize(_game, objectImage.getHeight(), objectImage.getWidth()))
+		if(!_bound->Initialize(_om, objectImage.getHeight(), objectImage.getWidth()))
 		{
 			return false;
 		}

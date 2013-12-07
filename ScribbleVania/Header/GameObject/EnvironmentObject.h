@@ -4,16 +4,7 @@
 #include "GameObject.h"
 #include "../Graphic/Image.h"
 #include "../Graphic/TextureManager.h"
-
-typedef enum class EnvSubType{
-	Wall,
-	Floor,
-	Ceiling,
-	Ledge,
-	Door,
-	Background,
-	Other
-} EnvSubType;
+#include "../DataStruct/Enums.h"
 
 class EnvironmentObject : public  GameObject
 {
@@ -31,12 +22,13 @@ class EnvironmentObject : public  GameObject
 
 		//Startup and Shutdown
 		virtual void Shutdown();
-		virtual bool Initialize(Game* game);
-		virtual bool Initialize(Game* game, D3DXVECTOR3 position);
+		virtual bool Initialize(ObjectManager* om);
+		virtual bool Initialize(ObjectManager* om, D3DXVECTOR3 position);
 
 		virtual void Reset();
 		virtual int GetWidth();
 		virtual int GetHeight();
+		virtual float GetScale();
 		virtual D3DXVECTOR3 GetCenter();
 		//getter
 		bool IsStatic() {return _static;}

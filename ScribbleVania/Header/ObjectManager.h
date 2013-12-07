@@ -2,23 +2,25 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <vector>
+#include <queue>
 #include <unordered_map>
 #include <queue>
-#include "GameObject/GameObject.h"
 #include "GameObject/EnvironmentObject.h"
 #include "Game/Game.h"
 #include "DataStruct/DepthTreeNode.h"
 #include "Room/Room.h"
-#include "GameObject\ObjectFactory.h"
-
+#include "GameObject/ObjectFactory.h"
+#include "DataStruct/Enums.h"
 class Player;
 using namespace std;
 
 struct CollisionPair
 {
-	unsigned int IDA;
-	unsigned int IDB;
+	unsigned int ID1;
+	unsigned int ID2;
 };
+
+class GameObject;
 
 class ObjectManager
 {
@@ -41,7 +43,11 @@ class ObjectManager
 		//switchlevelv
 		bool LoadRoom(Room* room);
 		void UnloadCurrentRoom();
+		virtual Graphics* GetGraphics(){return _game->getGraphics();}
+		virtual Input* GetInput(){return _game->getInput();}
 
+		void AddObject(GameObject* obj);
+		void RemoveObject(unsigned int _id);
 		Room* room1;
 		Room* room2;
 		Room* room3;
@@ -58,10 +64,12 @@ class ObjectManager
 		void Draw(DepthTreeNode*node);
 		void Draw(vector<unsigned int> objects);
 		queue<CollisionPair> _collisionPairs;
-		
+		unordered_map<ProjectileType,Image> _projectiles;
 		void BruteForceCollision();
 	private:
 		bool _roomChanged;
 		bool _treeLoaded;
 		ObjectFactory* _factory;
+		queue<GameObject*> _newObjs;
+		queue<unsigned int> _removeObjs;
 };

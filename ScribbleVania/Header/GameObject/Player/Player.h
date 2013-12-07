@@ -7,15 +7,8 @@
 #include "../../Collidable/BoundingBox.h"
 #include "../EnvironmentObject/Door.h"
 #include "../../Room/Room.h"
-
-typedef enum class PlayerState
-{
-	Walking,
-	Sliding,
-	Jumping,
-	Hanging
-} PlayerState;
-
+#include "../../DataStruct/Enums.h"
+#include "../Projectile/BoringProjectile.h"
 
 class Player : public  GameObject
 {
@@ -35,13 +28,18 @@ class Player : public  GameObject
 		void ProcessCollision(GameObject* obj);
 		D3DXVECTOR3 GetCenter();
 		//Startup and Shutdown
-		bool Initialize(Game* game);
-		bool Initialize(Game* game, D3DXVECTOR3 distance);
-		void Bounce(D3DXVECTOR3 direction);
+		bool Initialize(ObjectManager* om);
+		bool Initialize(ObjectManager* om, D3DXVECTOR3 distance);
+
+		D3DXVECTOR3 GetDirection();
+		void DBounce(D3DXVECTOR3 direction);
+		void VBounce(D3DXVECTOR3 direction);
+
 		void Shutdown();
 		void Reset();
 		int GetWidth();
 		int GetHeight();
+		float GetScale();
 	protected:
 		float _accel;
 		Image playerImage;
@@ -49,16 +47,21 @@ class Player : public  GameObject
 	private:
 		int _jumpCount;
 		int _jumpMax;
+		float _shotTimer;
 		GameObject* _touchedObj;
 		bool _climbing;
 		PlayerState _state;
 		float _fallAccel;
 		bool _onLeft;
 		ObjectManager* _om;
-		void EnvironmentCollision(EnvironmentObject* obj);
-			void WallCollision(EnvironmentObject* obj);
+		BoringProjectile p;
+
+		D3DXVECTOR3 ExitObject(GameObject* obj);
+
+		void EnvironmentCollision(EnvironmentObject* obj, D3DXVECTOR3 direction);
+			void WallCollision(EnvironmentObject* obj,D3DXVECTOR3 direction);
 			void FloorCollision(EnvironmentObject* obj);
-			void LedgeCollision(EnvironmentObject* obj);
+			void LedgeCollision(EnvironmentObject* obj,D3DXVECTOR3 direction);
 			void DoorCollision(Door* door);
 		void DefaultCollision(GameObject* obj);
 

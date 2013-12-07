@@ -1,8 +1,9 @@
 #include "../Header/ObjectManager.h"
+#include "../Header/GameObject/GameObject.h"
 #include "../Header/GameObject/Player/Player.h"
 #include "../Header/Room/Room.h"
 #include "../Header/GameObject/Enemy.h"
-
+#include "../Header/GameObject/GameObject.h"
 
 ObjectManager::ObjectManager()
 {
@@ -15,17 +16,16 @@ ObjectManager::ObjectManager(Game* game)
 	_game=game;
 
 	unsigned int nextID = GetNextID();
-	_player = new Player(nextID,D3DXVECTOR3(50,0,0),this);
+	_player = new Player(nextID,D3DXVECTOR3(GAME_WIDTH/2,0,0),this);
 	_objects.insert(std::make_pair(nextID,_player));
 	_drawTree = new DepthTreeNode(_player->GetPosition().z, nextID);
 	_factory = new ObjectFactory(this);
-
 	this->room1 = _factory->MakeTestRoom1();
 	this->room2 = _factory->MakeTestRoom2();
 	this->room3 = _factory->MakeTestRoom3();
 
 	_treeLoaded=false;
-	LoadRoom(room2);
+	LoadRoom(room1);
 }
 
 ObjectManager::~ObjectManager()
@@ -72,7 +72,7 @@ bool ObjectManager::Initialize()
 	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin(); 
 		itr!=_objects.end(); itr++)
 	{
-		if(!itr->second->Initialize(_game))
+		if(!itr->second->Initialize(this))
 		{
 			return false;
 		}
@@ -82,6 +82,8 @@ bool ObjectManager::Initialize()
 
 void ObjectManager::Update(float elapsedTime)
 {
+	if(elapsedTime > (1/30.0f))
+		elapsedTime = (1/30.0f);
 	if(_roomChanged)
 	{
 		_roomChanged=false;
@@ -92,6 +94,31 @@ void ObjectManager::Update(float elapsedTime)
 	{
 		itr->second->Update(elapsedTime);
 	}	
+	//Remove objs
+	unsigned int val;
+	GameObject* obj;
+	for(int i = _removeObjs.size()-1; i>=0; i--)
+	{
+		val = _removeObjs.front();
+		_removeObjs.pop();
+		obj = this->GetObjectByID(val);
+		if(obj!=NULL)
+		{
+			_drawTree->Remove(obj->GetPosition().z, val);
+			obj->Shutdown();
+			_objects.erase(val);
+		}
+		SAFE_DELETE(obj);
+	}
+
+	//Add objs
+	for(int i = _newObjs.size()-1; i >=0; i--)
+	{
+		obj = _newObjs.front();
+		_newObjs.pop();
+		_drawTree->AddToNode(obj->GetPosition().z, obj->GetID());
+		_objects.insert(make_pair(obj->GetID(),obj));
+	}
 }
 
 void ObjectManager::AI()
@@ -121,8 +148,10 @@ void ObjectManager::BruteForceCollision()
 {
 	CollisionPair nextCol;
 	CollisionPair next;
-	GameObject *objA, *objB;
+	GameObject *obj1, *obj2;
 	D3DXVECTOR3 va,vb;
+	int id1,id2,owner1,owner2;
+	ObjectType type1,type2;
 
 	//brute force collisions
 	for(unordered_map<unsigned int, GameObject*>::iterator itr1 = _objects.begin();
@@ -131,6 +160,31 @@ void ObjectManager::BruteForceCollision()
 		for(unordered_map<unsigned int, GameObject*>::iterator itr2 = _objects.begin();
 			itr2!=_objects.end(); itr2++)
 		{
+			obj1 = itr1->second;
+			id1 = obj1->GetID();
+			owner1 = obj1->GetOwnerID();
+			type1 = obj1->GetObjectType();
+
+			obj2 = itr2->second;
+			id2 = obj2->GetID();
+			owner2 = obj2->GetOwnerID();
+			type2 = obj2->GetObjectType();
+
+			//Do not collide with the background, make sure environment objects are not colliding with eachother
+			if(type1 == ObjectType::Background || 
+				type2 == ObjectType::Background ||
+				type1 == ObjectType::EnvironmentObject)
+					continue;
+
+			//Do not collide with something you own (projectiles), and do not collide with yourself
+			if(id1 == owner2 || owner1 == id2 || id1 == id2 || owner1 == owner2)
+				continue;
+
+			nextCol.ID1 = id1;
+			nextCol.ID2 = id2;
+			_collisionPairs.push(nextCol);
+
+			/*
 			if(itr1->second->GetObjectType() != ObjectType::Background 
 				&& itr2->second->GetObjectType()!=ObjectType::Background 
 				&& itr1->second->GetID() != itr2->second->GetID())
@@ -140,12 +194,15 @@ void ObjectManager::BruteForceCollision()
 				{
 					if(itr1->second->GetObjectType() != ObjectType::EnvironmentObject && itr2->second->GetObjectType()!=ObjectType::Background)
 					{
+						if( (itr1->second->GetObjectType() == ObjectType::Player ||itr1->second->GetObjectType() == ObjectType::Projectile) &&
+							itr2->second->GetObjectType() == ObjectType::Player || itr2->second->GetObjectType() == ObjectType::Projectile)
+								continue;
 						nextCol.IDA = itr1->second->GetID();
 						nextCol.IDB = itr2->second->GetID();
 						_collisionPairs.push(nextCol);
 					}
 				}
-			}
+			}*/
 		}
 	}
 
@@ -154,26 +211,13 @@ void ObjectManager::BruteForceCollision()
 	{
 		next = _collisionPairs.front();
 		_collisionPairs.pop();
-		objA = this->GetObjectByID(next.IDA);
-		objB = this->GetObjectByID(next.IDB);
+		obj1 = this->GetObjectByID(next.ID1);
+		obj2 = this->GetObjectByID(next.ID2);
 		
-		while(objA->GetCollidable()->Intersects(objB->GetCollidable()))
+		while(obj1->GetCollidable()->Intersects(obj2->GetCollidable()))
 		{
-
-			va = objA->GetVelocity();
-			vb = objB->GetVelocity();
-
-			//invert
-			va.x=va.x*-1.0f;
-			va.y=va.y*-1.0f;
-			vb.x=vb.x*-1.0f;
-			vb.y=vb.y*-1.0f;
-
-			D3DXVec3Normalize(&va,&va);
-			D3DXVec3Normalize(&vb,&vb);
-			
-			objA->ProcessCollision(objB);
-			objB->ProcessCollision(objA);
+			obj1->ProcessCollision(obj2);
+			obj2->ProcessCollision(obj1);
 
 			if(_roomChanged)
 			{
@@ -215,7 +259,6 @@ void ObjectManager::Draw(vector<unsigned int> objects)
 		this->GetObjectByID(objects[i])->Draw();
 	}
 }
-
 void ObjectManager::ShutDown()
 {
 	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin(); 
@@ -223,6 +266,16 @@ void ObjectManager::ShutDown()
 	{
 		if(itr->second!=NULL)
 			itr->second->Shutdown();
+	}
+
+	int newCount = _newObjs.size();
+	GameObject* g;
+	for(int i=0; i<newCount; i++)
+	{
+		g = _newObjs.front();
+		_newObjs.pop();
+		g->Shutdown();
+		SAFE_DELETE(g);
 	}
 	SAFE_DELETE(_factory);
 }
@@ -263,4 +316,17 @@ GameObject* ObjectManager::GetObjectByID(unsigned int ID)
 	{
 		return NULL;
 	}
+}
+
+void ObjectManager::AddObject(GameObject* obj)
+{
+	//_objects.insert(std::make_pair(obj->GetID(), obj));
+	//_drawTree->AddToNode(obj->GetPosition().z,obj->GetID());
+	obj->Initialize(this);
+	_newObjs.push(obj);
+}
+
+void ObjectManager::RemoveObject(unsigned int id)
+{
+	_removeObjs.push(id);
 }

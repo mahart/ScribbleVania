@@ -45,14 +45,16 @@ void DepthTreeNode::AddToNode(float depth, unsigned int ID)
 		}
 		else
 		{
-			std::vector<unsigned int>::iterator it;
-			for(it = objectIDs.begin(); it!= objectIDs.end();it++)
+			std::vector<unsigned int>::iterator it = objectIDs.begin();
+			int i;
+			for (i=objectIDs.size(); i>0; i--)
 			{
-				if(*it <= ID)
+				if(objectIDs[i-1] <=ID)
 				{
 					break;
 				}
 			}
+			it = it+(i-1);
 			objectIDs.insert(it,ID);
 		}
 	}
@@ -70,13 +72,37 @@ void DepthTreeNode::Remove(float depth, unsigned int ID)
 	}
 	else
 	{
-		for(unsigned int i=0; i < objectIDs.size(); i++)
+		/*for(std::vector<unsigned int>::iterator it = objectIDs.begin(); it != objectIDs.end(); ++it)
 		{
-			if(objectIDs[i]==ID)
+			if(*it==ID)
 			{
-				objectIDs.erase(objectIDs.begin()+i);
+				objectIDs.erase(it);
 				break;
 			}
+		}*/
+		std::vector<unsigned int>::iterator it = objectIDs.begin();
+		int low=0;
+		int high=objectIDs.size()-1;
+		int mid;
+
+		while(low<=high)
+		{
+			mid = low+((high-low)/2);
+			if(objectIDs[mid] > ID)
+			{
+				high = mid-1;
+			}
+			else if (objectIDs[mid]<ID)
+			{
+				low = mid+1;
+			}
+			else
+			{
+				it = it+mid;
+				objectIDs.erase(it);
+				return;
+			}
 		}
+		//not found, nothing to remove
 	}
 }

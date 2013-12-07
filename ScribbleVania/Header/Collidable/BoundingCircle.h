@@ -13,7 +13,7 @@ class BoundingCircle : public Collidable
 		virtual void Update(float elapsedTime);
 		virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE);
 		virtual void Draw(COLOR_ARGB color = graphicsNS::WHITE);
-		virtual bool Initialize(Game* game, int radius, int UNUSED);
+		virtual bool Initialize(ObjectManager* om, int radius, int UNUSED);
 		float Radius();
 
 		virtual void Reset();

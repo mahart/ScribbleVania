@@ -2,20 +2,14 @@
 #define WIN32_LEAN_AND_MEAN
 #include <d3dx9math.h>
 #include "../Graphic/Graphics.h"
-//#include "GameStructs.h"
 #include "../Graphic/Image.h"
 #include "../Graphic/TextureManager.h"
 #include "../Game/Game.h"
 #include "../Constants.h"
+#include "Enums.h"
 class GameObject;
 
-enum CollidableType
-{
-	Box,
-	Circle,
-	Other,
-};
-
+class ObjectManager;
 class Collidable
 {
 public:
@@ -23,7 +17,7 @@ public:
 	virtual ~Collidable(){/*do nothing*/}
 
 	virtual void Update(float elapsedTime)=0;
-	virtual bool Initialize(Game* game, int dimension1, int dimansion2)=0;
+	virtual bool Initialize(ObjectManager* om, int dimension1, int dimansion2)=0;
 	
 	//Debug Function
 	virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE)=0;
@@ -40,6 +34,7 @@ protected:
 	//Debug objects
 	Image _image;
 	TextureManager _texture;
+	ObjectManager* _om;
 private:
 };
 

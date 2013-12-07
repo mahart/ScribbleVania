@@ -13,7 +13,35 @@
 // New Stuff
 //===============================================
 const float MAX_PLAYER_SPEED = 200.0f;
+const float MAX_RED_SNAIL_MOVE_SPEED = 50.0f;
+const float MAX_RED_SNAIL_ATTACK_SPEED = 250.0f;
 const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
+const float BORING_P_BASE_SPEED = 400.0f;
+
+
+const int RED_SNAIL_COLS=8;
+const int RED_SNAIL_WIDTH= 50;
+const int RED_SNAIL_HEIGHT = 44;
+const float RED_SNAIL_ANIMATION_DELAY = 0.2f; 
+const int  RED_SNAIL_START_FRAME_RIGHT = 0;
+const int RED_SNAIL_END_FRAME_RIGHT = 7;
+const int RED_SNAIL_START_FRAME_LEFT=8;
+const int RED_SNAIL_END_FRAME_LEFT=15;
+const int RED_SNAIL_AGGRO_RADIUS=250;
+const int RED_SNAIL_PATROL_ACCEL = 100000;
+const int RED_SNAIL_ATTACK_ACCEL = 300000;
+
+
+const int GRAY_SNAIL_COLS=8;
+const int GRAY_SNAIL_WIDTH = 50;
+const int GRAY_SNAIL_HEIGHT = 44;
+const float GRAY_SNAIL_ANIMATION_DELAY = 0.2f; 
+const int  GRAY_SNAIL_START_FRAME_RIGHT = 0;
+const int GRAY_SNAIL_END_FRAME_RIGHT = 7;
+const int GRAY_SNAIL_START_FRAME_LEFT=8;
+const int GRAY_SNAIL_END_FRAME_LEFT=15;
+const int GRAY_SNAIL_AGGRO_RADIUS=250;
+const int GRAY_SNAIL_PATROL_ACCEL = 100000;
 //-----------------------------------------------
 // Useful macros
 //-----------------------------------------------
@@ -36,19 +64,25 @@ const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
 #define VK_A 0x41
 #define VK_S 0x53
 #define VK_D 0x44
+#define VK_J 0x4A;
+
+
 //-----------------------------------------------
 //                  Constants
 //-----------------------------------------------
 // graphic images
 const char NEBULA_IMAGE[] = "pictures\\orion.jpg";  // photo source NASA/courtesy of nasaimages.org 
 const char TEST_BG[]="pictures\\ws_Abstract.jpg";
+const char TEST_BG_2[] = "pictures\\background_2d_couleur_by_echodesigngarden-d5mwv69.jpg";
 const char PLANET_IMAGE[] = "pictures\\planet.png"; // picture of planet
 const char SHIP_IMAGE[]   = "pictures\\ship.png";   // spaceship
 const char BOX_IMAGE[] = "pictures\\BoundingBox.png";//Bounding box 
 const char LEDGE_IMAGE[] = "pictures\\LedgeBox.png";//LedgeBox
-const char SNAIL_IMAGE[] = "pictures\\super_metroid_yard2.png";//Snail Enemy
+const char RED_SNAIL_IMAGE[] = "pictures\\super_metroid_yard3.png";//RED_SNAIL Enemy
+const char GRAY_SNAIL_IMAGE[] = "pictures\\super_metroid_yard2.png";//GRAY_SNAIL Enemy
 const char OPEN_DOOR_IMAGE[] = "pictures\\OpenDoor.png";
 const char CIRCLE_IMAGE[] = "pictures\\BoundingCircle.png";
+const char BASIC_SHOT_IMAGE[] = "pictures\\Shot.png";
 
 // window
 const char CLASS_NAME[] = "ScribbleVania";
@@ -66,15 +100,7 @@ const float ROTATION_RATE = 180.0f;         // degrees per second
 const float SCALE_RATE = 0.2f;              // % change per second
 const float SHIP_SPEED = 100.0f;            // pixels per second
 const float SHIP_SCALE = 1.5f;              // starting ship scale
-
-const int SNAIL_COLS=8;
-const float SNAIL_WIDTH= 50;
-const float SNAIL_HEIGHT = 44;
-const float SNAIL_ANIMATION_DELAY = 0.2f; 
-const int  SNAIL_START_FRAME_RIGHT = 0;
-const int SNAIL_END_FRAME_RIGHT = 7;
-const int SNAIL_START_FRAME_LEFT=8;
-const int SNAIL_END_FRAME_LEFT=15;
+const int PLAYER_ACCEL = 250000;
 
 // game
 const double PI = 3.14159265;
@@ -92,6 +118,7 @@ const UCHAR ALT_KEY      = VK_MENU;         // Alt key
 const UCHAR ENTER_KEY    = VK_RETURN;       // Enter key
 const UCHAR PLAYER_LEFT_KEY    = VK_A;     // left arrow
 const UCHAR PLAYER_RIGHT_KEY   = VK_D;    // right arrow
+const UCHAR PLAYER_SHOOT_KEY   = VK_J;
 const UCHAR PLAYER_UP_KEY      = VK_W;       // up arrow
 const UCHAR PLAYER_JUMP_KEY	   = VK_SPACE;	//spacebar
 const UCHAR PLAYER_DOWN_KEY    = VK_S;     // down arrow

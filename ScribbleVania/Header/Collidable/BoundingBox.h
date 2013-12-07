@@ -17,7 +17,7 @@ class BoundingBox : public Collidable
 		virtual void Update(float elapsedTime);
 		virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE);
 		virtual void Draw(COLOR_ARGB color = graphicsNS::WHITE);
-		virtual bool Initialize(Game* game, int dimension1, int dimansion2);
+		virtual bool Initialize(ObjectManager* om, int dimension1, int dimansion2);
 		float Bottom();
 		float Top();
 		float Left();

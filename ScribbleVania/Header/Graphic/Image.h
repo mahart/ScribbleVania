@@ -42,6 +42,11 @@ class Image
     // Return reference to SpriteData structure.
     const virtual SpriteData& getSpriteInfo() {return spriteData;}
 
+	//ADDED BY MATTHEW HART
+	virtual bool isFlippedHorizontal(){return spriteData.flipHorizontal;}
+	virtual bool isFlippedVertical(){return spriteData.flipVertical;}
+	//END ADDED
+
     // Return visible parameter.
     virtual bool  getVisible()  {return visible;}
 

@@ -47,29 +47,29 @@ D3DXVECTOR3 Door::GetExit()
 	return _exit;
 }
 
-bool Door::Initialize(Game* game)
+bool Door::Initialize(ObjectManager* om)
 {
-	return Door::Initialize(game,ZERO_VECTOR);
+	return Door::Initialize(om,ZERO_VECTOR);
 }
 
-bool Door::Initialize(Game* game, D3DXVECTOR3 position)
+bool Door::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 {
-	_game = game;
+	_om = om;
 
 	if(_position == ZERO_VECTOR)
 		_position = position;
 
-	if(!objectTexture.initialize(_game->getGraphics(), LEDGE_IMAGE))
+	if(!objectTexture.initialize(_om->GetGraphics(), LEDGE_IMAGE))
 	{
 		return false;
 	}
 	else
 	{
-		if(!objectImage.initialize(_game->getGraphics(), _height, _width,0,&objectTexture))
+		if(!objectImage.initialize(_om->GetGraphics(), _height, _width,0,&objectTexture))
 		{
 			return false;
 		}
-		if(!_bound->Initialize(_game, objectImage.getHeight(), objectImage.getWidth()))
+		if(!_bound->Initialize(_om, objectImage.getHeight(), objectImage.getWidth()))
 		{
 			return false;
 		}
@@ -83,17 +83,17 @@ bool Door::SwitchOpenClose()
 	if(!_open)
 	{
 		_open = true;
-		if(!objectTexture.initialize(_game->getGraphics(), OPEN_DOOR_IMAGE))
+		if(!objectTexture.initialize(_om->GetGraphics(), OPEN_DOOR_IMAGE))
 		{
 			return false;
 		}
 		else
 		{
-			if(!objectImage.initialize(_game->getGraphics(), _height, _width,0,&objectTexture))
+			if(!objectImage.initialize(_om->GetGraphics(), _height, _width,0,&objectTexture))
 			{
 				return false;
 			}
-			if(!_bound->Initialize(_game, objectImage.getHeight(), objectImage.getWidth()))
+			if(!_bound->Initialize(_om, objectImage.getHeight(), objectImage.getWidth()))
 			{
 				return false;
 			}
@@ -103,17 +103,17 @@ bool Door::SwitchOpenClose()
 	else
 	{
 		_open = false;
-		if(!objectTexture.initialize(_game->getGraphics(), LEDGE_IMAGE))
+		if(!objectTexture.initialize(_om->GetGraphics(), LEDGE_IMAGE))
 		{
 			return false;
 		}
 		else
 		{
-			if(!objectImage.initialize(_game->getGraphics(), _height, _width,0,&objectTexture))
+			if(!objectImage.initialize(_om->GetGraphics(), _height, _width,0,&objectTexture))
 			{
 				return false;
 			}
-			if(!_bound->Initialize(_game, objectImage.getHeight(), objectImage.getWidth()))
+			if(!_bound->Initialize(_om, objectImage.getHeight(), objectImage.getWidth()))
 			{
 				return false;
 			}
@@ -153,14 +153,14 @@ void Door::ProcessCollision(GameObject* obj)
 	if(!this->_open)
 	{
 		if(this->_position.x < p->GetPosition().x)
-			p->Bounce(D3DXVECTOR3(5,0,0));
+			p->DBounce(D3DXVECTOR3(5,0,0));
 		else
-			p->Bounce(D3DXVECTOR3(-5,0,0));
+			p->DBounce(D3DXVECTOR3(-5,0,0));
 
 		if(this->_position.y < p->GetPosition().y)
-			p->Bounce(D3DXVECTOR3(0,5,0));
+			p->DBounce(D3DXVECTOR3(0,5,0));
 		else
-			p->Bounce(D3DXVECTOR3(0,-5,0));
+			p->DBounce(D3DXVECTOR3(0,-5,0));
 	}
 	this->SwitchOpenClose();
 }

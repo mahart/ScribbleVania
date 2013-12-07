@@ -3,21 +3,19 @@
 #include "GameObject.h"
 #include "../DataStruct/Enums.h"
 
-
-class Enemy : public GameObject
+class Projectile : public GameObject
 {
 	public:
-		Enemy();
-		Enemy(unsigned int ID);
-		~Enemy();
-	
-		//Draw Will change when the graphics component is replaced
+		Projectile();
+		Projectile(unsigned int id);
+		~Projectile();
+
+		void Update(float elapsedTime);
+
 		virtual void Draw(COLOR_ARGB color = graphicsNS::WHITE);
 
-		// Draw this image using the specified SpriteData.
-		//   The current SpriteData.rect is used to select the texture.
 		virtual void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE); // draw with SpriteData using color as filter
-		virtual void Update(float elapsedTime);
+
 		//Startup and Shutdown
 		virtual bool Initialize(ObjectManager* om);
 		virtual bool Initialize(ObjectManager* om, D3DXVECTOR3 position);
@@ -30,14 +28,15 @@ class Enemy : public GameObject
 		virtual int GetWidth();
 		virtual int GetHeight();
 		virtual float GetScale();
-		virtual void AI()=0;
-		EnemyType GetEnemyType(){return _enemyType;}
+		void ProcessCollision(GameObject* obj);
+		virtual void AI(){/*Do Nothing. Exists for if I make "smart" projectiles*/};
+		ProjectileType GetProjectileType(){return _projectileType;}	
 	protected:
-		EnemyType _enemyType;
-		Image objectImage;
-		TextureManager objectTexture;
-		D3DXVECTOR3 ExitObject(GameObject* obj);
-	private:	
-		
-};
+		GameObject* _owner;
+		ProjectileType _projectileType;
+		Image _projectileImage;
+		TextureManager _projectileTexture;
+		float _baseSpeed;
+	private:
 
+};

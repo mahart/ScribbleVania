@@ -10,8 +10,8 @@ class TestBarrier : public EnvironmentObject
 		TestBarrier(unsigned int ID, unsigned int height, unsigned int width,D3DXVECTOR3 position, EnvSubType type);
 		~TestBarrier();
 
-		bool Initialize(Game* game);
-		bool Initialize(Game* game, D3DXVECTOR3 position);
+		bool Initialize(ObjectManager* om);
+		bool Initialize(ObjectManager* om, D3DXVECTOR3 position);
 		void Update(float elapsedTime);
 		void Draw(COLOR_ARGB color = graphicsNS::WHITE);
 		void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE);

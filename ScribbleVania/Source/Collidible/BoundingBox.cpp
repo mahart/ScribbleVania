@@ -2,6 +2,7 @@
 #include "../../Header/ObjectManager.h"
 #include "../../Header/Constants.h"
 #include "../../Header/Collidable/BoundingCircle.h"
+#include "../../Header/ObjectManager.h"
 
 BoundingBox::BoundingBox(unsigned int ownerID, GameObject* ownerObject)
 {
@@ -32,18 +33,18 @@ void BoundingBox::Draw(COLOR_ARGB color)
 	_image.draw(color);
 }
 
-bool BoundingBox::Initialize(Game* game, int height, int width)
+bool BoundingBox::Initialize(ObjectManager* om, int height, int width)
 {
 	_height = height;
 	_width = width;
 	D3DXVECTOR3 p;
-	if(!_texture.initialize(game->getGraphics(), BOX_IMAGE))
+	if(!_texture.initialize(om->GetGraphics(), BOX_IMAGE))
 	{
 		return false;
 	}
 	else
 	{
-		if(!_image.initialize(game->getGraphics(),width, height,0,&_texture))
+		if(!_image.initialize(om->GetGraphics(),width, height,0,&_texture))
 		{
 			return false;
 		}

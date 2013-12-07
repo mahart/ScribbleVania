@@ -1,5 +1,6 @@
 #include "../../../Header/GameObject/EnvironmentObject/TestPlanetObj.h"
 #include "../../../Header/Collidable/BoundingCircle.h"
+#include "../../../Header/ObjectManager.h"
 
 TestPlanetObj::TestPlanetObj() : EnvironmentObject()
 {
@@ -27,23 +28,25 @@ TestPlanetObj::~TestPlanetObj()
 	EnvironmentObject::~EnvironmentObject();
 }
 
-bool TestPlanetObj::Initialize(Game* game)
+bool TestPlanetObj::Initialize(ObjectManager* om)
 {
-	return TestPlanetObj::Initialize(game, D3DXVECTOR3(GAME_WIDTH*0.5f - objectImage.getWidth() *0.5f, 
+	return TestPlanetObj::Initialize(om, D3DXVECTOR3(GAME_WIDTH*0.5f - objectImage.getWidth() *0.5f, 
 			 GAME_HEIGHT*0.5f - objectImage.getHeight()*0.5f, 1));
 }
 
-bool TestPlanetObj::Initialize(Game* game, D3DXVECTOR3 position)
+bool TestPlanetObj::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 {
-	_game=game;
-	
-	if(!objectTexture.initialize(_game->getGraphics(),PLANET_IMAGE))
+	_om=om;
+	if(_position == ZERO_VECTOR)
+		_position = position;
+
+	if(!objectTexture.initialize(_om->GetGraphics(),PLANET_IMAGE))
 	{
 		return false;
 	}
 	else
 	{
-		if(!objectImage.initialize(_game->getGraphics(),0, 0,0,&objectTexture))
+		if(!objectImage.initialize(_om->GetGraphics(),0, 0,0,&objectTexture))
 		{
 			return false;
 		}
@@ -57,12 +60,14 @@ bool TestPlanetObj::Initialize(Game* game, D3DXVECTOR3 position)
 		{
 			rad = this ->GetHeight()/2;
 		}
-
-		if(!_bound->Initialize(_game,rad,-1))
+		
+		if(!_bound->Initialize(_om,rad,-1))
 		{
 			return false;
 		}
 	}
+	objectImage.setX(this->_position.x);
+	objectImage.setY(this->_position.y);
 	return true;
 }
 
