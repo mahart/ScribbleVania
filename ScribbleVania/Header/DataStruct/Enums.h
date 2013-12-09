@@ -39,6 +39,12 @@ typedef enum class EnemyType
 	Other
 } EnemyType;
 
+typedef enum class BossType
+{
+	Snail,
+	Other
+} BossType;
+
 typedef enum class ProjectileType
 {
 	Basic,
@@ -61,6 +67,15 @@ typedef enum class RedSnailState
 	Falling,
 	Dead
 } RedSnailState;
+
+typedef enum class SnailBossState
+{
+	Falling,
+	Bouncing,
+	Attack,
+	Defend,
+	Dead
+} SnailBossState;
 
 //OTHER  =======================================================================
 typedef enum class Direction

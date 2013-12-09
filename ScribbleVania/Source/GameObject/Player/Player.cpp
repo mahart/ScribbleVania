@@ -416,6 +416,11 @@ D3DXVECTOR3 Player::ExitObject(GameObject* obj)
 
 void Player::ProcessCollision(GameObject* obj)
 {
+	if(obj->GetObjectType()==ObjectType::Projectile)
+	{
+		return;
+	}
+
 	D3DXVECTOR3 dir = ExitObject(obj);
 	switch (obj->GetObjectType())
 	{
@@ -614,8 +619,7 @@ void Player::DoorCollision(Door* door)
 {
 	if(!door->IsOpen())
 		return;
-
-	Room* r = door->GetRoom();
+	door->SwitchOpenClose();
 	_om->LoadRoom(door->GetRoom());
 	_position.x = door->GetExit().x;
 	_position.y = door->GetExit().y;

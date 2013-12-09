@@ -1,6 +1,6 @@
 #include "../../Header/GameObject/Enemy.h"
 
-Enemy::Enemy()
+Enemy::Enemy() :GameObject()
 {
 	_type = ObjectType::Enemy;
 	_velocity = ZERO_VECTOR;

@@ -14,8 +14,9 @@ BoringProjectile::BoringProjectile(unsigned int id, GameObject* owner) : Project
 	D3DXVec3Normalize(&direction, &_owner->GetDirection());
 	this->_velocity = _baseSpeed*direction;
 	_bound = new BoundingCircle(this->_id,this);
-	this->_position = owner->GetCenter();
-	this->_position.z++;
+	this->_position.x = owner->GetCenter().x;
+	this->_position.y = owner->GetPosition().y;
+	this->_position.z = owner->GetPosition().z+1;
 }
 
 BoringProjectile::~BoringProjectile()
@@ -68,6 +69,7 @@ bool BoringProjectile::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 void BoringProjectile::ProcessCollision(GameObject* obj)
 {
 	Projectile::ProcessCollision(obj);
+	_dying=true;
 	_om->RemoveObject(_id);
 }
 

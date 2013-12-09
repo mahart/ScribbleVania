@@ -144,11 +144,11 @@ void Door::Draw(SpriteData sd, COLOR_ARGB color)
 
 void Door::ProcessCollision(GameObject* obj)
 {
-	if(!(obj->GetObjectType() == ObjectType::Player))
+	if(!(obj->GetObjectType() == ObjectType::Projectile && obj->GetOwnerID()==0 &&!_open))
 	{
 		return;
 	}
-	Player* p = (Player*)obj;
+	/*Player* p = (Player*)obj;
 
 	if(!this->_open)
 	{
@@ -161,6 +161,6 @@ void Door::ProcessCollision(GameObject* obj)
 			p->DBounce(D3DXVECTOR3(0,5,0));
 		else
 			p->DBounce(D3DXVECTOR3(0,-5,0));
-	}
+	}*/
 	this->SwitchOpenClose();
 }

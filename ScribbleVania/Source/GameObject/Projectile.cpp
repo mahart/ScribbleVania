@@ -4,11 +4,13 @@
 Projectile::Projectile()
 {
 	_type=ObjectType::Projectile;
+	_dying=false;
 }
 
 Projectile::Projectile(unsigned int id) : GameObject(id)
 {
 	_type=ObjectType::Projectile;
+	_dying=false;
 }
 
 Projectile::~Projectile()
@@ -96,9 +98,6 @@ float Projectile::GetScale()
 
 void Projectile::ProcessCollision(GameObject* obj)
 {
-	if(obj->GetObjectType()==ObjectType::Player)
-		return;
-
 	D3DXVECTOR3 diff = GetCenter() - obj->GetCollidable()->GetNearestPoint(GetCenter());
 	diff.z=0;
 	D3DXVECTOR3 direction;

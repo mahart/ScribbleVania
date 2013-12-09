@@ -4,6 +4,7 @@
 #include "../Header/Room/Room.h"
 #include "../Header/GameObject/Enemy.h"
 #include "../Header/GameObject/GameObject.h"
+#include "../Header/GameObject/Boss.h"
 
 ObjectManager::ObjectManager()
 {
@@ -16,7 +17,7 @@ ObjectManager::ObjectManager(Game* game)
 	_game=game;
 
 	unsigned int nextID = GetNextID();
-	_player = new Player(nextID,D3DXVECTOR3(GAME_WIDTH/2,0,0),this);
+	_player = new Player(nextID,D3DXVECTOR3(GAME_WIDTH/2,GAME_HEIGHT/2,0),this);
 	_objects.insert(std::make_pair(nextID,_player));
 	_drawTree = new DepthTreeNode(_player->GetPosition().z, nextID);
 	_factory = new ObjectFactory(this);
@@ -150,8 +151,6 @@ void ObjectManager::BruteForceCollision()
 	CollisionPair next;
 	GameObject *obj1, *obj2;
 	D3DXVECTOR3 va,vb;
-	int id1,id2,owner1,owner2;
-	ObjectType type1,type2;
 
 	//brute force collisions
 	for(unordered_map<unsigned int, GameObject*>::iterator itr1 = _objects.begin();
@@ -161,27 +160,13 @@ void ObjectManager::BruteForceCollision()
 			itr2!=_objects.end(); itr2++)
 		{
 			obj1 = itr1->second;
-			id1 = obj1->GetID();
-			owner1 = obj1->GetOwnerID();
-			type1 = obj1->GetObjectType();
-
 			obj2 = itr2->second;
-			id2 = obj2->GetID();
-			owner2 = obj2->GetOwnerID();
-			type2 = obj2->GetObjectType();
 
-			//Do not collide with the background, make sure environment objects are not colliding with eachother
-			if(type1 == ObjectType::Background || 
-				type2 == ObjectType::Background ||
-				type1 == ObjectType::EnvironmentObject)
-					continue;
-
-			//Do not collide with something you own (projectiles), and do not collide with yourself
-			if(id1 == owner2 || owner1 == id2 || id1 == id2 || owner1 == owner2)
+			if(SkipPair(obj1,obj2))
 				continue;
 
-			nextCol.ID1 = id1;
-			nextCol.ID2 = id2;
+			nextCol.ID1 = obj1->GetID();
+			nextCol.ID2 = obj2->GetID();
 			_collisionPairs.push(nextCol);
 
 			/*
@@ -216,8 +201,26 @@ void ObjectManager::BruteForceCollision()
 		
 		while(obj1->GetCollidable()->Intersects(obj2->GetCollidable()))
 		{
-			obj1->ProcessCollision(obj2);
-			obj2->ProcessCollision(obj1);
+			if(obj1->GetObjectType()==ObjectType::Projectile)
+			{
+				obj1->ProcessCollision(obj2);
+				obj2->ProcessCollision(obj1);
+
+				if(((Projectile*)obj1)->isDying())
+					break;
+			}
+			else if(obj2->GetObjectType() == ObjectType::Projectile)
+			{
+				obj2->ProcessCollision(obj1);
+				obj1->ProcessCollision(obj2);
+				if(((Projectile*)obj2)->isDying())
+					break;
+			}
+			else
+			{
+				obj1->ProcessCollision(obj2);
+				obj2->ProcessCollision(obj1);
+			}
 
 			if(_roomChanged)
 			{
@@ -230,6 +233,76 @@ void ObjectManager::BruteForceCollision()
 			}
 		}
 	}
+}
+
+bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
+{
+	D3DXVECTOR3 va,vb;
+	int id1,id2,owner1,owner2;
+	ObjectType type1,type2;
+
+	id1 = obj1->GetID();
+	owner1 = obj1->GetOwnerID();
+	type1 = obj1->GetObjectType();
+
+	id2 = obj2->GetID();
+	owner2 = obj2->GetOwnerID();
+	type2 = obj2->GetObjectType();
+
+	//Do not collide with the background, make sure environment objects are not colliding with eachother
+	if(type1 == ObjectType::Background || 
+		type2 == ObjectType::Background ||
+		type1 == ObjectType::EnvironmentObject)
+			return true;
+
+	/*if(type1==ObjectType::Boss || type2==ObjectType::Boss)
+	{
+		if(((Boss*)obj1)->GetBossType() == BossType::Snail ||((Boss*)obj2)->GetBossType() == BossType::Snail)
+			return true;
+	}*/
+
+	//Do not collide with something you own (projectiles), and do not collide with yourself
+	if(id1 == owner2 || owner1 == id2 || id1 == id2 || owner1 == owner2)
+		return true;
+
+	//Skip projectile-projectile collisions
+	if(type1 == ObjectType::Projectile && type2 == ObjecType::Projectile)
+		return true;
+
+	//Special enemy collision ignoring
+	if(type1 == ObjectType::Enemy && type2 == ObjectType::Enemy)
+	{
+		EnemyType et1,et2;
+		et1 = ((Enemy*)obj1)->GetEnemyType();
+		et2 = ((Enemy*)obj2)->GetEnemyType();
+
+		if((et1 == EnemyType::GraySnail || et1 == EnemyType::RedSnail) &&
+			(et2 == EnemyType::GraySnail || et2 == EnemyType::RedSnail))
+				return true;
+	}
+	else if(type1 == ObjectType::Enemy && type2 == ObjectType::Boss)
+	{
+		EnemyType et1;
+		BossType bt2;
+		et1 = ((Enemy*)obj1)->GetEnemyType();
+		bt2 = ((Boss*)obj2)->GetBossType();
+
+		if((et1 == EnemyType::GraySnail || et1 == EnemyType::RedSnail) && bt2 == BossType::Snail)
+			return true;
+	}
+	else if(type1==ObjectType::Boss && type2 == ObjectType::Enemy)
+	{
+		EnemyType et2;
+		BossType bt1;
+
+		et2 = ((Enemy*)obj2)->GetEnemyType();
+		bt1 = ((Boss*)obj1)->GetBossType();
+
+		if(bt1==BossType::Snail && (et2 == EnemyType::GraySnail || et2 == EnemyType::RedSnail))
+			return true;
+	}
+
+	return false;
 }
 
 void ObjectManager::Draw()
@@ -254,9 +327,21 @@ void ObjectManager::Draw(DepthTreeNode * node)
 
 void ObjectManager::Draw(vector<unsigned int> objects)
 {
+	queue<unsigned int> deletedNums;
 	for(unsigned int i = 0; i < objects.size(); i++)
 	{
-		this->GetObjectByID(objects[i])->Draw();
+		if(this->GetObjectByID(objects[i])!=NULL)
+			this->GetObjectByID(objects[i])->Draw();
+		else
+			deletedNums.push(i);
+	}
+
+	//clean up null ids
+	vector<unsigned int>::iterator it = objects.begin();
+	while(!deletedNums.empty())
+	{
+		objects.erase(it+deletedNums.front());
+		deletedNums.pop();
 	}
 }
 void ObjectManager::ShutDown()

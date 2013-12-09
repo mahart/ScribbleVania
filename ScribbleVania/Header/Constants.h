@@ -16,7 +16,7 @@ const float MAX_PLAYER_SPEED = 200.0f;
 const float MAX_RED_SNAIL_MOVE_SPEED = 50.0f;
 const float MAX_RED_SNAIL_ATTACK_SPEED = 250.0f;
 const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
-const float BORING_P_BASE_SPEED = 400.0f;
+const float BORING_P_BASE_SPEED = 500.0f;
 
 
 const int RED_SNAIL_COLS=8;
@@ -39,9 +39,31 @@ const float GRAY_SNAIL_ANIMATION_DELAY = 0.2f;
 const int  GRAY_SNAIL_START_FRAME_RIGHT = 0;
 const int GRAY_SNAIL_END_FRAME_RIGHT = 7;
 const int GRAY_SNAIL_START_FRAME_LEFT=8;
+const int GRAY_SNAIL_SHOT_FRAME1 = 6;
+const int GRAY_SNAIL_SHOT_FRAME2 = 9;
 const int GRAY_SNAIL_END_FRAME_LEFT=15;
 const int GRAY_SNAIL_AGGRO_RADIUS=250;
 const int GRAY_SNAIL_PATROL_ACCEL = 100000;
+
+const int SNAIL_BOSS_COLS=8;
+const int SNAIL_BOSS_WIDTH=50;
+const int SNAIL_BOSS_SHOT_LEFT_START=0;
+const int SNAIL_BOSS_SHOT_LEFT_END=0;
+const int SNAIL_BOSS_SHOT_RIGHT_START=0;
+const int SNAIL_BOSS_SHOT_RIGHT_END=0;
+const float SNAIL_BOSS_SHOT_ANIMATION_DELAY=0.1f;
+const int SNAIL_BOSS_HEIGHT=44;
+const int SNAIL_BOSS_START_FRAME=0;
+const int SNAIL_BOSS_START_FRAME_STANDING_RIGHT=0;
+const int SNAIL_BOSS_END_FRAME_STANDING_RIGHT=7;
+const int SNAIL_BOSS_START_FRAME_STANDING_LEFT=24;
+const int SNAIL_BOSS_END_FRAME_STANDING_LEFT=31;
+const int SNAIL_BOSS_START_FRAME_BOUNCING_RIGHT=8;
+const int SNAIL_BOSS_END_FRAME_BOUNCING_RIGHT=15;
+const int SNAIL_BOSS_START_FRAME_BOUNCING_LEFT=16;
+const int SNAIL_BOSS_END_FRAME_BOUNCING_LEFT=23;
+const int SNAIL_BOSS_END_FRAME=7;
+const float SNAIL_BOSS_ANIMATION_DELAY = 0.1f;
 //-----------------------------------------------
 // Useful macros
 //-----------------------------------------------
@@ -80,6 +102,7 @@ const char BOX_IMAGE[] = "pictures\\BoundingBox.png";//Bounding box
 const char LEDGE_IMAGE[] = "pictures\\LedgeBox.png";//LedgeBox
 const char RED_SNAIL_IMAGE[] = "pictures\\super_metroid_yard3.png";//RED_SNAIL Enemy
 const char GRAY_SNAIL_IMAGE[] = "pictures\\super_metroid_yard2.png";//GRAY_SNAIL Enemy
+const char SNAIL_BOSS_IMAGE[] = "pictures\\super_metroid_yard-Boss.png";//Snail boss
 const char OPEN_DOOR_IMAGE[] = "pictures\\OpenDoor.png";
 const char CIRCLE_IMAGE[] = "pictures\\BoundingCircle.png";
 const char BASIC_SHOT_IMAGE[] = "pictures\\Shot.png";

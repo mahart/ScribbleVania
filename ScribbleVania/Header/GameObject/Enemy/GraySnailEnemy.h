@@ -16,6 +16,7 @@ public:
 	bool Initialize(ObjectManager* om, D3DXVECTOR3 position);
 	void Update(float elapsedTime);
 	void ProcessCollision(GameObject* obj);
+	D3DXVECTOR3 GetDirection();
 	void AI();
 private:
 
@@ -29,10 +30,13 @@ private:
 		void WallCollision(EnvironmentObject* obj);
 		void PlayerCollision(Player* obj, D3DXVECTOR3 direction);
 
+	void ProjectileCollision(Projectile* obj);
 	void AdjustImage();
 	float _fallAccel;
 	float _accel;
 	RedSnailState _state;
 	Direction _dir;
+	Direction _oldDir;
 	Player* _player;
+	bool _shot;
 };

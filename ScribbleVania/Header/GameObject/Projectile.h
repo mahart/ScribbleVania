@@ -31,8 +31,10 @@ class Projectile : public GameObject
 		void ProcessCollision(GameObject* obj);
 		virtual void AI(){/*Do Nothing. Exists for if I make "smart" projectiles*/};
 		ProjectileType GetProjectileType(){return _projectileType;}	
+		bool isDying(){return _dying;}
 	protected:
 		GameObject* _owner;
+		bool _dying;
 		ProjectileType _projectileType;
 		Image _projectileImage;
 		TextureManager _projectileTexture;

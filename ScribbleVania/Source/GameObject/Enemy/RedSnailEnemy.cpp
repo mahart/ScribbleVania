@@ -111,7 +111,9 @@ void RedSnailEnemy::Update(float elapsedTime)
 
 void RedSnailEnemy::ProcessCollision(GameObject* obj)
 {
-	D3DXVECTOR3 direction = ExitObject(obj);
+	D3DXVECTOR3 direction;
+	if(obj->GetObjectType()!=ObjectType::Projectile)
+		direction = ExitObject(obj);
 	switch(obj->GetObjectType())
 	{
 		case ObjectType::Player:

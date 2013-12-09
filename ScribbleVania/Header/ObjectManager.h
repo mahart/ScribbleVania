@@ -72,4 +72,5 @@ class ObjectManager
 		ObjectFactory* _factory;
 		queue<GameObject*> _newObjs;
 		queue<unsigned int> _removeObjs;
+		bool SkipPair(GameObject* obj1, GameObject* obj2);
 };

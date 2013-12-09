@@ -8,6 +8,8 @@
 #include "../../Header/GameObject/EnvironmentObject/TestPlanetObj.h"
 #include "../../Header/GameObject//Enemy/RedSnailEnemy.h"
 #include "../../Header/GameObject/Enemy/GraySnailEnemy.h"
+#include "../../Header/GameObject/Boss/SnailBoss.h"
+
 ObjectFactory::ObjectFactory()
 {
 }
@@ -25,13 +27,18 @@ Room* ObjectFactory::MakeTestRoom1()
 {
 	vector<GameObject*> * temp = new vector<GameObject*>();
 	unsigned int id = _om->GetNextID();
-	temp->push_back(new TestPlanetObj(id));
+	//temp->push_back(new TestPlanetObj(id));
 	
-	id = _om->GetNextID();
+	//id = _om->GetNextID();
 	temp->push_back(new TestBackGround(id));
 	
+	//Floor
 	id = _om->GetNextID();
 	temp->push_back(new TestBarrier(id,25, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1),EnvSubType::Floor));
+
+	//Ceiling
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,25, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.2f,1),EnvSubType::Floor));
 
 	//Left Wall
 	id = _om->GetNextID();
@@ -49,11 +56,10 @@ Room* ObjectFactory::MakeTestRoom1()
 	id = _om->GetNextID();
 	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-30.0f, 0), &_om->room2));
 
-	//Gray Snail
+	//SnailBoss
 	id = _om->GetNextID();
-	temp->push_back(new GraySnailEnemy(id, D3DXVECTOR3(GAME_WIDTH/2, GAME_HEIGHT*0.9f-50, 2), (Player*) _om->GetObjectByID(0)));
+	temp->push_back(new SnailBoss(id,(Player*)_om->GetObjectByID(0)));
 
-	
 	return new Room(temp);
 }
 
@@ -127,6 +133,10 @@ Room* ObjectFactory::MakeTestRoom2()
 	id = _om->GetNextID();
 	temp->push_back(new RedSnailEnemy(id, D3DXVECTOR3(GAME_WIDTH/3, GAME_HEIGHT*0.9f-50, 2),
 		(Player*)_om->GetObjectByID(0)));
+
+	//Gray Snail
+	id = _om->GetNextID();
+	temp->push_back(new GraySnailEnemy(id, D3DXVECTOR3(GAME_WIDTH/2, GAME_HEIGHT*0.9f-50, 2), (Player*) _om->GetObjectByID(0)));
 
 	return new Room(temp);
 }
