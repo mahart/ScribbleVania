@@ -22,7 +22,7 @@ Player::Player() : GameObject()
 Player::Player(unsigned int id) : GameObject(id)
 {
 	_accel = PLAYER_ACCEL;
-	_fallAccel = GRAVITY;
+	_fallAccel = GRAVITY/5;
 	_jumpCount=1;
 	_jumpMax=1;
 	_onLeft = true;
@@ -42,7 +42,7 @@ Player::Player(unsigned int id,D3DXVECTOR3 position, ObjectManager* om):GameObje
 	_jumpCount =1;
 	_jumpMax = 1;
 	_onLeft = true;
-	_fallAccel = 98100;
+	_fallAccel = GRAVITY/5;
 	_state = PlayerState::Jumping;
 	_type = ObjectType::Player;
 	_velocity= ZERO_VECTOR;

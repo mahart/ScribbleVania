@@ -36,6 +36,8 @@ typedef enum class EnemyType
 {
 	RedSnail,
 	GraySnail,
+	FatFrog,
+	BombFrog,
 	Other
 } EnemyType;
 
@@ -76,6 +78,14 @@ typedef enum class SnailBossState
 	Defend,
 	Dead
 } SnailBossState;
+
+typedef enum class FatFrogState
+{
+	Patrolling,
+	Jumping,
+	Falling,
+	Dead
+} FatFrogState;
 
 //OTHER  =======================================================================
 typedef enum class Direction

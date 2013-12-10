@@ -90,11 +90,17 @@ void SnailBossProjectile::ProcessCollision(GameObject* obj)
 	Projectile::ProcessCollision(obj);
 	_om->RemoveObject(_id);
 	_dying=true;
+	//Don't spawn snails in walls
 	if(obj->GetObjectType() ==ObjecType::EnvironmentObject)
 	{
 		EnvironmentObject* e = (EnvironmentObject*)obj;
 		if(e->GetSubType() != EnvSubType::Floor)
 			return;
+	}
+	//Don't Spawn snails in player
+	if(obj->GetObjectType() == ObjecType::Player)
+	{
+		return;
 	}
 	_om->AddObject(new RedSnailEnemy(_om->GetNextID(),
 		_position,(Player*)_om->GetObjectByID(0)));

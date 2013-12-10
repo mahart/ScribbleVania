@@ -40,6 +40,8 @@ class Player : public  GameObject
 		int GetWidth();
 		int GetHeight();
 		float GetScale();
+		D3DXVECTOR3 ExitObject(GameObject* obj);
+
 	protected:
 		float _accel;
 		Image playerImage;
@@ -56,8 +58,7 @@ class Player : public  GameObject
 		ObjectManager* _om;
 		BoringProjectile p;
 
-		D3DXVECTOR3 ExitObject(GameObject* obj);
-
+		
 		void EnvironmentCollision(EnvironmentObject* obj, D3DXVECTOR3 direction);
 			void WallCollision(EnvironmentObject* obj,D3DXVECTOR3 direction);
 			void FloorCollision(EnvironmentObject* obj);

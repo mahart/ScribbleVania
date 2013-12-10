@@ -9,6 +9,8 @@
 #include "../../Header/GameObject//Enemy/RedSnailEnemy.h"
 #include "../../Header/GameObject/Enemy/GraySnailEnemy.h"
 #include "../../Header/GameObject/Boss/SnailBoss.h"
+#include "../../Header/GameObject/Enemy/FatFrogEnemy.h"
+#include "../../Header/GameObject/Enemy/BombFrogEnemy.h"
 
 ObjectFactory::ObjectFactory()
 {
@@ -56,9 +58,15 @@ Room* ObjectFactory::MakeTestRoom1()
 	id = _om->GetNextID();
 	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-30.0f, 0), &_om->room2));
 
+	/*
 	//SnailBoss
 	id = _om->GetNextID();
 	temp->push_back(new SnailBoss(id,(Player*)_om->GetObjectByID(0)));
+	*/
+
+	//Fat Frog
+	id = _om->GetNextID();
+	temp->push_back(new FatFrogEnemy(id,D3DXVECTOR3(GAME_WIDTH/2+75, GAME_HEIGHT/2,2),(Player*)_om->GetObjectByID(0)));
 
 	return new Room(temp);
 }

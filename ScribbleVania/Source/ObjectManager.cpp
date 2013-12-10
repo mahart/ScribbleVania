@@ -93,8 +93,10 @@ void ObjectManager::Update(float elapsedTime)
 	for(unordered_map<unsigned int, GameObject*>::iterator itr = _objects.begin();
 		itr!=_objects.end(); itr++)
 	{
-		itr->second->Update(elapsedTime);
+		if(!itr->second->IsDead())
+			itr->second->Update(elapsedTime);
 	}	
+
 	//Remove objs
 	unsigned int val;
 	GameObject* obj;
@@ -249,17 +251,14 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 	owner2 = obj2->GetOwnerID();
 	type2 = obj2->GetObjectType();
 
+	if(obj1->IsDead() || obj2->IsDead())
+		return true;
 	//Do not collide with the background, make sure environment objects are not colliding with eachother
 	if(type1 == ObjectType::Background || 
 		type2 == ObjectType::Background ||
 		type1 == ObjectType::EnvironmentObject)
 			return true;
 
-	/*if(type1==ObjectType::Boss || type2==ObjectType::Boss)
-	{
-		if(((Boss*)obj1)->GetBossType() == BossType::Snail ||((Boss*)obj2)->GetBossType() == BossType::Snail)
-			return true;
-	}*/
 
 	//Do not collide with something you own (projectiles), and do not collide with yourself
 	if(id1 == owner2 || owner1 == id2 || id1 == id2 || owner1 == owner2)
@@ -268,6 +267,13 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 	//Skip projectile-projectile collisions
 	if(type1 == ObjectType::Projectile && type2 == ObjecType::Projectile)
 		return true;
+
+	/*
+	if(type1 == ObjectType::Enemy && ((Enemy*)obj1)->GetEnemyType() == EnemyType::FatFrog)
+		return true;
+
+	if(type2 == ObjectType::Enemy && ((Enemy*)obj2)->GetEnemyType() == EnemyType::FatFrog)
+		return true;*/
 
 	//Special enemy collision ignoring
 	if(type1 == ObjectType::Enemy && type2 == ObjectType::Enemy)
@@ -279,6 +285,7 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 		if((et1 == EnemyType::GraySnail || et1 == EnemyType::RedSnail) &&
 			(et2 == EnemyType::GraySnail || et2 == EnemyType::RedSnail))
 				return true;
+
 	}
 	else if(type1 == ObjectType::Enemy && type2 == ObjectType::Boss)
 	{

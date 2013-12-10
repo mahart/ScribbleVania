@@ -54,6 +54,8 @@ class GameObject
 		//Adds the given id to the objects owned by this object
 		virtual void AddToOwned(unsigned int id){_ownedIDs.push_back(id);}
 
+		virtual bool IsDead(){return false;}
+
 		//Removes the given id from the objects owned by this object
 		virtual void RemoveFromOwned(unsigned int id)
 		{

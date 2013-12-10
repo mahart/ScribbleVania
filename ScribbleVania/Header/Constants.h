@@ -12,13 +12,23 @@
 //===============================================
 // New Stuff
 //===============================================
-const float MAX_PLAYER_SPEED = 200.0f;
+const float MAX_PLAYER_SPEED = 250.0f;
 const float MAX_RED_SNAIL_MOVE_SPEED = 50.0f;
 const float MAX_RED_SNAIL_ATTACK_SPEED = 250.0f;
 const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
 const float BORING_P_BASE_SPEED = 500.0f;
 
+//FAT FROG
+const int FAT_FROG_COLS=7;//CHANGE
+const int FAT_FROG_WIDTH=128;
+const int FAT_FROG_HEIGHT=100;
+const float FAT_FROG_ANIMATION_DELAY=0.3f;
+const int FAT_FROG_START_FRAME=0;
+const int FAT_FROG_END_FRAME=22;
 
+
+
+//RED SNAIL
 const int RED_SNAIL_COLS=8;
 const int RED_SNAIL_WIDTH= 50;
 const int RED_SNAIL_HEIGHT = 44;
@@ -31,7 +41,7 @@ const int RED_SNAIL_AGGRO_RADIUS=250;
 const int RED_SNAIL_PATROL_ACCEL = 100000;
 const int RED_SNAIL_ATTACK_ACCEL = 300000;
 
-
+//GRAY SNAIL
 const int GRAY_SNAIL_COLS=8;
 const int GRAY_SNAIL_WIDTH = 50;
 const int GRAY_SNAIL_HEIGHT = 44;
@@ -45,6 +55,7 @@ const int GRAY_SNAIL_END_FRAME_LEFT=15;
 const int GRAY_SNAIL_AGGRO_RADIUS=250;
 const int GRAY_SNAIL_PATROL_ACCEL = 100000;
 
+//SNAIL BOSS
 const int SNAIL_BOSS_COLS=8;
 const int SNAIL_BOSS_WIDTH=50;
 const int SNAIL_BOSS_SHOT_LEFT_START=0;
@@ -103,6 +114,7 @@ const char LEDGE_IMAGE[] = "pictures\\LedgeBox.png";//LedgeBox
 const char RED_SNAIL_IMAGE[] = "pictures\\super_metroid_yard3.png";//RED_SNAIL Enemy
 const char GRAY_SNAIL_IMAGE[] = "pictures\\super_metroid_yard2.png";//GRAY_SNAIL Enemy
 const char SNAIL_BOSS_IMAGE[] = "pictures\\super_metroid_yard-Boss.png";//Snail boss
+const char FAT_FROG_IMAGE[] = "pictures\\frog.png";//frog
 const char OPEN_DOOR_IMAGE[] = "pictures\\OpenDoor.png";
 const char CIRCLE_IMAGE[] = "pictures\\BoundingCircle.png";
 const char BASIC_SHOT_IMAGE[] = "pictures\\Shot.png";
