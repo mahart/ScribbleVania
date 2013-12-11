@@ -17,9 +17,9 @@ public:
 	void Update(float elapsedTime);
 	void ProcessCollision(GameObject* obj);
 	D3DXVECTOR3 GetDirection();
+	bool IsDead(){return _state == RedSnailState::Dead;}
 	void AI();
 private:
-
 	void UpdatePatrol(float elapsedTime);
 	void UpdateAttack(float elapsedTime);
 	void UpdateFalling(float elapsedTime);

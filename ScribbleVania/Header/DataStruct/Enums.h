@@ -44,6 +44,7 @@ typedef enum class EnemyType
 typedef enum class BossType
 {
 	Snail,
+	Frog,
 	Other
 } BossType;
 
@@ -78,6 +79,16 @@ typedef enum class SnailBossState
 	Defend,
 	Dead
 } SnailBossState;
+
+typedef enum class FrogBossState
+{
+	Fall,
+	Jump,
+	Glide,
+	Attack,
+	Patrol,
+	Dead
+}FrogBossState;
 
 typedef enum class FatFrogState
 {

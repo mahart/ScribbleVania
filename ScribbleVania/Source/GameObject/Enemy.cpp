@@ -66,12 +66,14 @@ void Enemy::Update(float elapsedTime)
 
 void Enemy::Draw(COLOR_ARGB color)
 {
-	objectImage.draw(color);
+	if(!IsDead())
+		objectImage.draw(color);
 }
 
 void Enemy::Draw(SpriteData sd, COLOR_ARGB color)
 {
-	objectImage.draw(sd,color);
+	if(!IsDead())
+		objectImage.draw(sd,color);
 }
 
 D3DXVECTOR3 Enemy::GetCenter()

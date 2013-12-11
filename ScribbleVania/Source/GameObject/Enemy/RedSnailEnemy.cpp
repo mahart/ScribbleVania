@@ -9,6 +9,7 @@ RedSnailEnemy::RedSnailEnemy() : Enemy()
 	_accel = RED_SNAIL_PATROL_ACCEL;
 	_dir = Direction::Right;
 	_state=RedSnailState::Patrol;
+	_hitPoints = RED_SNAIL_HP;
 }
 
 RedSnailEnemy::RedSnailEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p) : Enemy(ID)
@@ -23,6 +24,7 @@ RedSnailEnemy::RedSnailEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p) :
 	_dir = Direction::Right;
 	_state=RedSnailState::Patrol;
 	_player =p;
+	_hitPoints = RED_SNAIL_HP;
 }
 
 
@@ -59,16 +61,23 @@ bool RedSnailEnemy::Initialize(ObjectManager* om,  D3DXVECTOR3 position)
 			return false;
 		}
 	}
+	if(_state == RedSnailState::Dead)
+		_state = RedSnailState::Patrol;
 
 	objectImage.setFrames(RED_SNAIL_START_FRAME_RIGHT, RED_SNAIL_END_FRAME_RIGHT);
 	objectImage.setCurrentFrame(RED_SNAIL_START_FRAME_RIGHT);
 	objectImage.setFrameDelay(RED_SNAIL_ANIMATION_DELAY);
+
+	_hitPoints = RED_SNAIL_HP;
 
 	return true;
 }
 
 void RedSnailEnemy::Update(float elapsedTime)
 {
+	if(_state == RedSnailState::Dead)
+		return;
+
 	_velocity.y += _fallAccel*elapsedTime*elapsedTime;
 
 	switch(_dir)
@@ -114,6 +123,10 @@ void RedSnailEnemy::ProcessCollision(GameObject* obj)
 	D3DXVECTOR3 direction;
 	if(obj->GetObjectType()!=ObjectType::Projectile)
 		direction = ExitObject(obj);
+
+	if(_state == RedSnailState::Dead)
+		return;
+
 	switch(obj->GetObjectType())
 	{
 		case ObjectType::Player:
@@ -121,6 +134,9 @@ void RedSnailEnemy::ProcessCollision(GameObject* obj)
 			break;
 		case ObjectType::EnvironmentObject:
 			EnvironmentCollision((EnvironmentObject*)obj);
+			break;
+		case ObjectType::Projectile:
+			_hitPoints--;
 			break;
 		default:
 			DefaultCollision(obj);
@@ -299,6 +315,12 @@ void RedSnailEnemy::AI()
 {
 	if(_state==RedSnailState::Falling || _state == RedSnailState::Dead)
 		return;
+
+	if(_hitPoints<=0)
+	{
+		_state = RedSnailState::Dead;
+		return;
+	}
 
 	float diffX = _position.x - _player->GetPosition().x;
 	float diffY = _position.y - _player->GetPosition().y;

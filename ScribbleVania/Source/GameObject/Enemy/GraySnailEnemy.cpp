@@ -11,6 +11,7 @@ GraySnailEnemy::GraySnailEnemy() : Enemy()
 	_dir = Direction::Right;
 	_state=RedSnailState::Falling;
 	_shot=false;
+	_hitPoints = GRAY_SNAIL_HP;
 }
 
 GraySnailEnemy::GraySnailEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p) : Enemy(ID)
@@ -32,6 +33,7 @@ GraySnailEnemy::GraySnailEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p)
 	_state=RedSnailState::Falling;
 	_player =p;
 	_shot=false;
+	_hitPoints = GRAY_SNAIL_HP;
 }
 
 GraySnailEnemy::~GraySnailEnemy()
@@ -71,6 +73,12 @@ bool GraySnailEnemy::Initialize(ObjectManager* om,  D3DXVECTOR3 position)
 	objectImage.setFrames(GRAY_SNAIL_START_FRAME_RIGHT, GRAY_SNAIL_END_FRAME_RIGHT);
 	objectImage.setCurrentFrame(GRAY_SNAIL_START_FRAME_RIGHT);
 	objectImage.setFrameDelay(GRAY_SNAIL_ANIMATION_DELAY);
+
+	_hitPoints = GRAY_SNAIL_HP;
+
+	if(_state == RedSnailState::Dead)
+		_state = RedSnailState::Falling;
+
 	return true;
 }
 
@@ -102,6 +110,8 @@ void GraySnailEnemy::Update(float elapsedTime)
 		case RedSnailState::Patrol:
 			UpdatePatrol(elapsedTime);
 			break;
+		case RedSnailState::Dead:
+			return;
 		default:
 			//bad state
 			break;
@@ -200,6 +210,9 @@ void GraySnailEnemy::ProcessCollision(GameObject* obj)
 	
 	if(obj->GetObjectType()!=ObjectType::Projectile)
 		direction= ExitObject(obj);
+
+	if(_state == RedSnailState::Dead)
+		return;
 
 	switch(obj->GetObjectType())
 	{
@@ -310,10 +323,12 @@ void GraySnailEnemy::FloorCollision(EnvironmentObject* obj)
 
 void GraySnailEnemy::ProjectileCollision(Projectile* obj)
 {
+	_hitPoints--;
 	if((_dir == Direction::Left || _dir == Direction::Right) && !objectImage.isFlippedVertical())
 		return;
 	_state = RedSnailState::Falling;
 	objectImage.setDegrees(0.0f);
+
 }
 
 void GraySnailEnemy::WallCollision(EnvironmentObject* obj)
@@ -358,6 +373,11 @@ void GraySnailEnemy::DefaultCollision(GameObject* obj)
 
 void GraySnailEnemy::AI()
 {
+	if(_hitPoints<=0)
+	{
+		_state = RedSnailState::Dead;
+	}
+
 	if(_state==RedSnailState::Falling || _state == RedSnailState::Dead)
 		return;
 

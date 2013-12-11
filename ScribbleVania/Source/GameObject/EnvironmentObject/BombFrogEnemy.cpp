@@ -154,6 +154,9 @@ void BombFrogEnemy::Jump()
 
 void BombFrogEnemy::ProcessCollision(GameObject* obj)
 {
+	if(_state==FatFrogState::Dead)
+		return;
+
 	if(obj->GetObjectType() == ObjectType::Player)
 	{
 		if(obj->GetPosition().y<((BoundingBox*)_bound)->Bottom())
@@ -163,9 +166,12 @@ void BombFrogEnemy::ProcessCollision(GameObject* obj)
 	}
 	else if(obj->GetObjectType()!=ObjectType::Projectile)
 		ExitObject(obj);
-
-	if(_state==FatFrogState::Dead)
+	else
+	{
+		_state= FatFrogState::Dead;
 		return;
+	}
+
 
 	switch(obj->GetObjectType())
 	{
@@ -208,7 +214,10 @@ void BombFrogEnemy::FloorCollision(EnvironmentObject* obj)
 {
 	//hit ceiling
 	if(obj->GetPosition().y<_position.y)
+	{
+		_velocity.y=0;
 		return;
+	}
 
 	if(_state==FatFrogState::Jumping || _state==FatFrogState::Falling)
 	{

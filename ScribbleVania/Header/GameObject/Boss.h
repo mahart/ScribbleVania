@@ -32,6 +32,8 @@ class Boss : public GameObject
 
 	protected:
 		BossType _bossType;
+		int _hitPoints;
+		
 		Image _bossImage;
 		TextureManager _bossTexture;
 		D3DXVECTOR3 ExitObject(GameObject* obj);

@@ -19,7 +19,7 @@ class RedSnailEnemy : public Enemy
 		void Update(float elapsedTime);
 		void ProcessCollision(GameObject* obj);
 		void AI();
-
+		bool IsDead(){return _state == RedSnailState::Dead;}
 	private:
 		void EnvironmentCollision(EnvironmentObject* obj);
 		void DefaultCollision(GameObject* obj);

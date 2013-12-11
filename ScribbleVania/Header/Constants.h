@@ -19,12 +19,21 @@ const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
 const float BORING_P_BASE_SPEED = 500.0f;
 
 //FAT FROG
-const int FAT_FROG_COLS=7;//CHANGE
+const int FAT_FROG_HP =5;
+const int FAT_FROG_COLS=7;
 const int FAT_FROG_WIDTH=128;
 const int FAT_FROG_HEIGHT=100;
-const float FAT_FROG_ANIMATION_DELAY=0.3f;
+const float FAT_FROG_ANIMATION_DELAY=0.1f;
 const int FAT_FROG_START_FRAME=0;
 const int FAT_FROG_END_FRAME=22;
+
+const int FROG_BOSS_HP = 10;
+const int FROG_BOSS_THRESHOLD=5;
+
+const int RED_SNAIL_HP = 3;
+const int GRAY_SNAIL_HP =5;
+
+const int SNAIL_BOSS_HP = 70;
 
 
 

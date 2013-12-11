@@ -137,7 +137,7 @@ void ObjectManager::AI()
 		}
 		else if(obj->GetObjectType()==ObjectType::Boss)
 		{
-			//update boss
+			((Boss*)obj)->AI();
 		}
 	}	
 }
@@ -170,26 +170,6 @@ void ObjectManager::BruteForceCollision()
 			nextCol.ID1 = obj1->GetID();
 			nextCol.ID2 = obj2->GetID();
 			_collisionPairs.push(nextCol);
-
-			/*
-			if(itr1->second->GetObjectType() != ObjectType::Background 
-				&& itr2->second->GetObjectType()!=ObjectType::Background 
-				&& itr1->second->GetID() != itr2->second->GetID())
-			{
-				if(!(itr1->second->GetObjectType() == ObjectType::EnvironmentObject 
-					&& itr2->second->GetObjectType() == ObjectType::EnvironmentObject))
-				{
-					if(itr1->second->GetObjectType() != ObjectType::EnvironmentObject && itr2->second->GetObjectType()!=ObjectType::Background)
-					{
-						if( (itr1->second->GetObjectType() == ObjectType::Player ||itr1->second->GetObjectType() == ObjectType::Projectile) &&
-							itr2->second->GetObjectType() == ObjectType::Player || itr2->second->GetObjectType() == ObjectType::Projectile)
-								continue;
-						nextCol.IDA = itr1->second->GetID();
-						nextCol.IDB = itr2->second->GetID();
-						_collisionPairs.push(nextCol);
-					}
-				}
-			}*/
 		}
 	}
 
@@ -286,6 +266,10 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 			(et2 == EnemyType::GraySnail || et2 == EnemyType::RedSnail))
 				return true;
 
+		if((et1 == EnemyType::FatFrog || et1 == EnemyType::BombFrog) &&
+			(et2 == EnemyType::FatFrog || et2 == EnemyType::BombFrog))
+				return true;
+
 	}
 	else if(type1 == ObjectType::Enemy && type2 == ObjectType::Boss)
 	{
@@ -295,6 +279,9 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 		bt2 = ((Boss*)obj2)->GetBossType();
 
 		if((et1 == EnemyType::GraySnail || et1 == EnemyType::RedSnail) && bt2 == BossType::Snail)
+			return true;
+
+		if((et1 == EnemyType::FatFrog||et1 == EnemyType::BombFrog)&&bt2==BossType::Frog)
 			return true;
 	}
 	else if(type1==ObjectType::Boss && type2 == ObjectType::Enemy)
@@ -306,6 +293,9 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 		bt1 = ((Boss*)obj1)->GetBossType();
 
 		if(bt1==BossType::Snail && (et2 == EnemyType::GraySnail || et2 == EnemyType::RedSnail))
+			return true;
+
+		if((et2 == EnemyType::FatFrog||et2 == EnemyType::BombFrog)&&bt1==BossType::Frog)
 			return true;
 	}
 

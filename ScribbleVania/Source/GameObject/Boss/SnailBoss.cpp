@@ -13,6 +13,9 @@ SnailBoss::SnailBoss() : Boss()
 	_attackTimer = 0.0f;
 	_startBounceTime=10.0f;
 	_bounceCountStop=4;
+	_hitPoints = SNAIL_BOSS_HP;
+	_hitThreshold = FROG_BOSS_THRESHOLD;
+	_hitCount=0;
 }
 
 SnailBoss::SnailBoss(unsigned int ID, Player* p):Boss(ID)
@@ -32,6 +35,9 @@ SnailBoss::SnailBoss(unsigned int ID, Player* p):Boss(ID)
 	_startBounceTime=10.0f;
 	_bounceCountStop=4;
 	srand(ID);
+	_hitPoints = SNAIL_BOSS_HP;
+	_hitThreshold = FROG_BOSS_THRESHOLD;
+	_hitCount=0;
 }
 
 SnailBoss::~SnailBoss()
@@ -75,6 +81,18 @@ bool SnailBoss::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 	return true;
 }
 
+void SnailBoss::Draw(COLOR_ARGB color)
+{
+	if(_state != SnailBossState::Dead)
+		Boss::Draw(color);
+}
+
+void SnailBoss::Draw(SpriteData sd, COLOR_ARGB color)
+{
+	if(_state != SnailBossState::Dead)
+		Boss::Draw(color);
+}
+
 void SnailBoss::Update(float elapsedTime)
 {
 	switch(_state)
@@ -88,6 +106,8 @@ void SnailBoss::Update(float elapsedTime)
 		case SnailBossState::Attack:
 			UpdateAttacking(elapsedTime);
 			break;
+		case SnailBossState::Dead:
+			return;
 		default:
 			break;
 	}
@@ -143,11 +163,20 @@ void SnailBoss::ProcessCollision(GameObject* obj)
 {
 	if((obj->GetObjectType() == ObjectType::EnvironmentObject))
 		ExitObject(obj);
+	
+	if(_state == SnailBossState::Dead)
+		return;
 
 	switch(obj->GetObjectType())
 	{
 		case ObjectType::EnvironmentObject:
 			EnvironmentCollision((EnvironmentObject*)obj);
+			break;
+		case ObjectType::Player:
+			//Damage player
+			break;
+		case ObjectType::Projectile:
+			_hitPoints--;
 			break;
 		default:
 			break;
@@ -241,5 +270,14 @@ void SnailBoss::SwitchStanding()
 
 void SnailBoss::AI()
 {
+	if(_state==SnailBossState::Dead)
+		return;
+
+	if(_hitPoints<=0)
+	{
+		_state = SnailBossState::Dead;
+	}
+
+	
 }
 

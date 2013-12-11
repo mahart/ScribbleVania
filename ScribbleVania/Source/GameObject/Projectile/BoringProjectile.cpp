@@ -15,7 +15,7 @@ BoringProjectile::BoringProjectile(unsigned int id, GameObject* owner) : Project
 	this->_velocity = _baseSpeed*direction;
 	_bound = new BoundingCircle(this->_id,this);
 	this->_position.x = owner->GetCenter().x;
-	this->_position.y = owner->GetPosition().y;
+	this->_position.y = owner->GetCenter().y;
 	this->_position.z = owner->GetPosition().z+1;
 }
 

@@ -35,6 +35,7 @@ class Enemy : public GameObject
 	protected:
 		EnemyType _enemyType;
 		Image objectImage;
+		int _hitPoints;
 		TextureManager objectTexture;
 		D3DXVECTOR3 ExitObject(GameObject* obj);
 	private:	
