@@ -6,7 +6,7 @@ class SnailBoss : public Boss
 {
 	public:
 		SnailBoss();
-		SnailBoss(unsigned int ID, Player* p);
+		SnailBoss(unsigned int ID, Player* p, D3DXVECTOR3 position);
 		~SnailBoss();
 
 		bool Initialize(ObjectManager* om);
@@ -42,6 +42,7 @@ class SnailBoss : public Boss
 		void EnvironmentCollision(EnvironmentObject* obj);
 		void FloorCollision(EnvironmentObject* obj);
 		void WallCollision(EnvironmentObject* obj);
+		void PlayerCollision(Player* obj);
 
 		void SwitchBouncing();
 		void SwitchStanding();

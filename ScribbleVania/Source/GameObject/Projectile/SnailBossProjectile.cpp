@@ -2,6 +2,7 @@
 #include "../../../Header/ObjectManager.h"
 #include "../../../Header/Collidable/BoundingCircle.h"
 #include "../../../Header/GameObject/Enemy/RedSnailEnemy.h"
+#include "../../../Header/GameObject/Enemy/GraySnailEnemy.h";
 
 SnailBossProjectile::SnailBossProjectile()
 {
@@ -102,8 +103,12 @@ void SnailBossProjectile::ProcessCollision(GameObject* obj)
 	{
 		return;
 	}
-	_om->AddObject(new RedSnailEnemy(_om->GetNextID(),
+	if(rand()%5==0)
+		_om->AddObject(new GraySnailEnemy(_om->GetNextID(),
 		_position,(Player*)_om->GetObjectByID(0)));
+	else
+		_om->AddObject(new RedSnailEnemy(_om->GetNextID(),
+			_position,(Player*)_om->GetObjectByID(0)));
 }
 
 unsigned int SnailBossProjectile::GetOwnerID()

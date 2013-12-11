@@ -14,7 +14,7 @@ FrogBoss::FrogBoss():Boss()
 	_switchToGlide=false;
 	_jumpCount=0;
 	_maxJumpCount=2;
-	_glideShotTime=1.0f;
+	_glideShotTime=FROG_BOSS_FIRE_RATE;
 	_glideShotTimer=0;
 	_hitPoints = FROG_BOSS_HP;
 	_hitThreshold = FROG_BOSS_THRESHOLD;
@@ -34,7 +34,7 @@ FrogBoss::FrogBoss(unsigned int ID, Player* p,D3DXVECTOR3 position) : Boss(ID)
 	_switchToGlide=false;
 	_jumpCount=0;
 	_maxJumpCount=2;
-	_glideShotTime=1.0f;
+	_glideShotTime=FROG_BOSS_FIRE_RATE;
 	_glideShotTimer=0;
 	_hitPoints = FROG_BOSS_HP;
 	_hitThreshold = FROG_BOSS_THRESHOLD;
@@ -78,6 +78,7 @@ bool FrogBoss::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 	_bossImage.setFrames(FAT_FROG_START_FRAME,FAT_FROG_END_FRAME);
 	_bossImage.setCurrentFrame(FAT_FROG_START_FRAME);
 	_bossImage.setFrameDelay(FAT_FROG_ANIMATION_DELAY);
+	_om->FrogDead(_state==FrogBossState::Dead);
 	return true;
 }
 
@@ -144,7 +145,7 @@ void FrogBoss::UpdateGlide(float elapsedTime)
 	if(_glideShotTimer>=_glideShotTime)
 	{
 		_glideShotTimer=0;
-		_om->AddObject(new BombFrogEnemy(_om->GetNextID(), GetCenter(),_player));
+		_om->AddObject(new BombFrogEnemy(_om->GetNextID(), GetCenter(),_player,_id));
 	}
 }
 
@@ -288,7 +289,10 @@ void FrogBoss::AI()
 		_switchToGlide=true;
 
 	if(_hitPoints<=0)
+	{
 		_state = FrogBossState::Dead;
+		_om->FrogDead(true);
+	}
 
 	D3DXVECTOR3 ppos = _player->GetPosition();
 	if(ppos.x < _position.x)

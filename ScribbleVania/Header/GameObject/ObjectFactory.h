@@ -15,6 +15,13 @@ public:
 	Room* MakeS4();
 	Room* MakeSB();
 
+	Room* MakeF1();
+	Room* MakeF2();
+	Room* MakeF3();
+	Room* MakeFB();
+
+	Room* MakeFinalRoom();
+
 	Room* MakeTestRoom1();
 	Room* MakeTestRoom2();
 	Room* MakeTestRoom3();

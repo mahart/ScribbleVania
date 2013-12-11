@@ -59,7 +59,21 @@ class ObjectManager
 		Room* Snail4;
 		Room* SnailB;
 		Room* Frog1;
+		Room* Frog2;
+		Room* Frog3;
+		Room* FrogB;
+
+		Room* FinalRoom;
+
+		void FrogDead(bool b){_frogDead = b;}
+		bool FrogDead(){return _frogDead;}
+
+		void SnailDead(bool b){_snailDead = b;}
+		bool SnailDead(){return _snailDead;}
+
 	protected:
+		bool _frogDead;
+		bool _snailDead;
 		//loadroom
 		//switchroom
 		Game* _game;

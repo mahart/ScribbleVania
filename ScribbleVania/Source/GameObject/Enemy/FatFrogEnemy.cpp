@@ -51,7 +51,7 @@ bool FatFrogEnemy::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 	}
 	else
 	{
-		if(!objectImage.initialize(_om->GetGraphics(), FAT_FROG_WIDTH, FAT_FROG_HEIGHT, FAT_FROG_COLS, &objectTexture, 0.75f))
+		if(!objectImage.initialize(_om->GetGraphics(), FAT_FROG_WIDTH, FAT_FROG_HEIGHT, FAT_FROG_COLS, &objectTexture, 0.5f))
 		{
 			return false;
 		}

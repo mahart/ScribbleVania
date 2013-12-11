@@ -18,7 +18,7 @@ SnailBoss::SnailBoss() : Boss()
 	_hitCount=0;
 }
 
-SnailBoss::SnailBoss(unsigned int ID, Player* p):Boss(ID)
+SnailBoss::SnailBoss(unsigned int ID, Player* p, D3DXVECTOR3 position):Boss(ID)
 {
 	_bossType = BossType::Snail;
 	_bound = new BoundingBox(ID, this);
@@ -26,7 +26,7 @@ SnailBoss::SnailBoss(unsigned int ID, Player* p):Boss(ID)
 	_position = ZERO_VECTOR;
 	_fallAccel= GRAVITY;
 	_dir = Direction::Left;
-
+	_position=position;
 	_state = SnailBossState::Falling;
 	_player = p;
 	_bounceCount=0;
@@ -78,6 +78,7 @@ bool SnailBoss::Initialize(ObjectManager* om, D3DXVECTOR3 position)
 	_bossImage.setFrames(SNAIL_BOSS_START_FRAME, SNAIL_BOSS_END_FRAME);
 	_bossImage.setCurrentFrame(SNAIL_BOSS_START_FRAME);
 	_bossImage.setFrameDelay(SNAIL_BOSS_ANIMATION_DELAY);
+	_om->SnailDead(_state==SnailBossState::Dead);
 	return true;
 }
 
@@ -173,7 +174,7 @@ void SnailBoss::ProcessCollision(GameObject* obj)
 			EnvironmentCollision((EnvironmentObject*)obj);
 			break;
 		case ObjectType::Player:
-			//Damage player
+			PlayerCollision((Player*)obj);
 			break;
 		case ObjectType::Projectile:
 			_hitPoints--;
@@ -181,6 +182,24 @@ void SnailBoss::ProcessCollision(GameObject* obj)
 		default:
 			break;
 	}
+}
+
+void SnailBoss::PlayerCollision(Player* obj)
+{
+	D3DXVECTOR3 distance, speed;
+	if(obj->GetCenter().x < GetCenter().x)
+	{
+		distance = D3DXVECTOR3(((BoundingBox*)_bound)->Left()-(obj->GetPosition().x+obj->GetWidth())-1,-1,0);
+		speed = D3DXVECTOR3(-250,-100,0);
+	}
+	else
+	{
+		distance = D3DXVECTOR3(((BoundingBox*)_bound)->Right() - obj->GetPosition().x +1,-1,0);
+		speed = D3DXVECTOR3(250,-100,0);
+	}
+
+	obj->DBounce(distance);
+	obj->VBounce(speed);
 }
 
 void SnailBoss::EnvironmentCollision(EnvironmentObject* obj)
@@ -276,6 +295,7 @@ void SnailBoss::AI()
 	if(_hitPoints<=0)
 	{
 		_state = SnailBossState::Dead;
+		_om->SnailDead(true);
 	}
 
 	

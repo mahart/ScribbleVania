@@ -106,6 +106,8 @@ void Player::Shutdown()
 void Player::Update(float elapsedTime)
 {
 	Input* input = _om->GetInput();
+	_om->SnailDead(true);
+	_om->FrogDead(true);
 	if(input->isKeyDown(PLAYER_UP_KEY))
 	{   
 		//Looking up
@@ -190,7 +192,7 @@ void Player::UpdateJumping(float elapsedTime,Input* input)
 	if(input->isKeyDown(PLAYER_SHOOT_KEY) && _shotTimer<=0)
 	{
 		_om->AddObject(new BoringProjectile(_om->GetNextID(), this));
-		_shotTimer=0.25f;
+		_shotTimer=PLAYER_SHOOT_SPEED;
 	}
 
 	if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
@@ -205,7 +207,7 @@ void Player::UpdateJumping(float elapsedTime,Input* input)
 	}
 	if(input->isKeyDown(PLAYER_JUMP_KEY))               // if accel up
 	{
-		if(_velocity.y>=0 && _jumpCount<_jumpMax)
+		if(_velocity.y>=0 && _jumpCount<_jumpMax && _om->FrogDead())
 		{
 			_velocity.y =-350;
 			_jumpCount++;
@@ -222,7 +224,7 @@ void Player::UpdateWalking(float elapsedTime,Input* input)
 	if(input->isKeyDown(PLAYER_SHOOT_KEY) && _shotTimer<=0)
 	{
 		_om->AddObject(new BoringProjectile(_om->GetNextID(), this));
-		_shotTimer=0.25f;
+		_shotTimer=PLAYER_SHOOT_SPEED;
 	}
 
 	if(input->isKeyDown(PLAYER_RIGHT_KEY))            // if accel right
@@ -269,7 +271,7 @@ void Player::UpdateSliding(float elapsedTime,Input* input)
 		_velocity.y += _fallAccel*0.25f*elapsedTime*elapsedTime;
 	}
 
-	if(input->isKeyDown(PLAYER_JUMP_KEY))
+	if(input->isKeyDown(PLAYER_JUMP_KEY) && _om->SnailDead())
 	{
 		if(_onLeft)
 		{
@@ -345,7 +347,7 @@ void Player::UpdateHanging(float elapsedTime, Input* input)
 	}
 	else
 	{
-		if(input->isKeyDown(PLAYER_JUMP_KEY) && !input->wasKeyPressed(PLAYER_JUMP_KEY))
+		if(input->isKeyDown(PLAYER_JUMP_KEY) && !input->wasKeyPressed(PLAYER_JUMP_KEY) && _om->SnailDead())
 		{
 			if(_onLeft)
 			{
@@ -436,26 +438,8 @@ void Player::ProcessCollision(GameObject* obj)
 
 void Player::DefaultCollision(GameObject* obj)
 {
-	/*D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
-	diff.z=0;
-	D3DXVECTOR3 direction;
-	
-	if(diff.x==0 && diff.y==0)
-	{
-		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
-		D3DXVec3Normalize(&direction, &temp);
-	}
-	else
-	{
-		D3DXVec3Normalize(&direction,&diff);
-	}*/
-
 	bool vertNeg = _velocity.y <0;
 	bool horzNeg = _velocity.x <0;
-	/*while(this->_bound->Intersects(obj->GetCollidable()))
-	{
-		this->_position+=direction*0.1f;
-		*/
 	if(vertNeg && _velocity.y!=0)
 	{
 		_velocity.y+=10;
@@ -501,27 +485,6 @@ void Player::EnvironmentCollision(EnvironmentObject* obj, D3DXVECTOR3 direction)
 
 void Player::FloorCollision(EnvironmentObject* obj)
 {
-	/*D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
-	diff.z=0;
-	D3DXVECTOR3 direction;
-
-	if(diff.x==0 && diff.y==0)
-	{
-		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
-		D3DXVec3Normalize(&direction, &temp);
-	}
-	else
-	{
-		D3DXVec3Normalize(&direction,&diff);
-	}
-
-	bool vertNeg = this->_velocity.y <0;
-	bool horzNeg = this->_velocity.x <0;
-
-	while(this->_bound->Intersects(obj->GetCollidable()))
-	{
-		this->_position+=direction*0.1f;
-	}*/
 
 	_velocity.y=0;
 	if(_position.y < obj->GetPosition().y)
@@ -533,27 +496,6 @@ void Player::FloorCollision(EnvironmentObject* obj)
 
 void Player::WallCollision(EnvironmentObject* obj, D3DXVECTOR3 direction)
 {
-	/*
-	D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
-	diff.z=0;
-	D3DXVECTOR3 direction;
-
-	if(diff.x==0 && diff.y==0)
-	{
-		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
-		D3DXVec3Normalize(&direction, &temp);
-	}
-	else
-	{
-		D3DXVec3Normalize(&direction,&diff);
-	}
-	*/
-
-	/*
-	while(this->_bound->Intersects(obj->GetCollidable()))
-	{
-		this->_position+=direction*0.1f;
-	}*/
 
 	_velocity.x=0;
 	_velocity.y=0;
@@ -566,33 +508,21 @@ void Player::WallCollision(EnvironmentObject* obj, D3DXVECTOR3 direction)
 	{
 		_onLeft=true;
 	}
-	_state=PlayerState::Sliding;
+
+	if(_om->SnailDead())
+		_state=PlayerState::Sliding;
 }
 
 void Player::LedgeCollision(EnvironmentObject* obj,D3DXVECTOR3 direction)
 {
-	/*D3DXVECTOR3 diff = this->GetCenter()-obj->GetCollidable()->GetNearestPoint(this->GetCenter());
-	diff.z=0;
-	D3DXVECTOR3 direction;
-	
-	if(diff.x==0 && diff.y==0)
-	{
-		D3DXVECTOR3 temp(this->GetVelocity().x *-1, this->GetVelocity().y *-1,0);
-		D3DXVec3Normalize(&direction, &temp);
-	}
-	else
-	{
-		D3DXVec3Normalize(&direction,&diff);
-	}
-
-	while(this->_bound->Intersects(obj->GetCollidable()))
-	{
-		this->_position+=direction*0.1f;
-	}
-	*/
-
 	_touchedObj = obj;
 	_velocity.y=0;
+	if(!_om->SnailDead())
+	{
+		_velocity.x=0;
+		return;
+	}
+
 	if(_position.y < obj->GetCenter().y)
 	{
 		_state = PlayerState::Hanging;

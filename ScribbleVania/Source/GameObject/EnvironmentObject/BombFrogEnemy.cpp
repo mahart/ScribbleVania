@@ -13,6 +13,23 @@ BombFrogEnemy::BombFrogEnemy() : Enemy()
 	_maxJumps=2;
 }
 
+BombFrogEnemy::BombFrogEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p, unsigned int owner) : Enemy(ID)
+{
+	_enemyType = EnemyType::BombFrog;
+	_bound = new BoundingBox(ID,this);
+	_position=position;
+	_fallAccel = GRAVITY/10;
+
+	_dir = Direction::Right;
+	_state = FatFrogState::Falling;
+	_player=p;
+	_jumpTimer=0;
+	_jumpTime = 2.0f;
+	_jumpCount=0;
+	_maxJumps=2;
+	_ownerID= owner;
+}
+
 BombFrogEnemy::BombFrogEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p) : Enemy(ID)
 {
 	_enemyType = EnemyType::BombFrog;
@@ -27,6 +44,7 @@ BombFrogEnemy::BombFrogEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p) :
 	_jumpTime = 2.0f;
 	_jumpCount=0;
 	_maxJumps=2;
+	_ownerID=ID;
 }
 
 BombFrogEnemy::~BombFrogEnemy()
@@ -169,6 +187,8 @@ void BombFrogEnemy::ProcessCollision(GameObject* obj)
 	else
 	{
 		_state= FatFrogState::Dead;
+		if(_id!=_ownerID)
+			_om->RemoveObject(_id);
 		return;
 	}
 

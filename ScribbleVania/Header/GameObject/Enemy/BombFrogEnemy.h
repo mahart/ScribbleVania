@@ -11,6 +11,7 @@ class BombFrogEnemy : public Enemy
 	public:
 		BombFrogEnemy();
 		BombFrogEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p);
+		BombFrogEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p, unsigned int owner);
 		~BombFrogEnemy();
 
 		bool Initialize(ObjectManager* om);
@@ -20,8 +21,10 @@ class BombFrogEnemy : public Enemy
 		void Draw(COLOR_ARGB color = graphicsNS::WHITE);
 		void Draw(SpriteData sd, COLOR_ARGB color = graphicsNS::WHITE); // draw with SpriteData using color as filter
 		void AI();
+		unsigned int GetOwnerID(){return _ownerID;}
 		bool IsDead(){return _state==FatFrogState::Dead;}
 	private:
+		unsigned int _ownerID;
 		FatFrogState _state;
 		Direction _dir;
 		Player* _player;

@@ -26,7 +26,9 @@ ObjectManager::ObjectManager(Game* game)
 	this->room3 = _factory->MakeTestRoom3();
 	MakeRooms();
 	_treeLoaded=false;
-	LoadRoom(Snail2);
+	LoadRoom(Snail1);
+	_snailDead = false;
+	_frogDead = false;
 }
 
 
@@ -37,6 +39,11 @@ void ObjectManager::MakeRooms()
 	Snail3 = _factory->MakeS3();
 	Snail4 = _factory->MakeS4();
 	SnailB = _factory->MakeSB();
+	Frog1 = _factory->MakeF1();
+	Frog2 = _factory->MakeF2();
+	Frog3 = _factory->MakeF3();
+	FrogB = _factory->MakeFB();
+	FinalRoom = _factory->MakeFinalRoom();
 }
 
 ObjectManager::~ObjectManager()
@@ -266,6 +273,9 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 		return true;*/
 
 	//Special enemy collision ignoring
+	if((type1==ObjectType::Enemy || type1==ObjectType::Boss)&&(type2==ObjectType::Enemy || type2==ObjectType::Boss))
+		return true;
+	/*
 	if(type1 == ObjectType::Enemy && type2 == ObjectType::Enemy)
 	{
 		EnemyType et1,et2;
@@ -307,7 +317,7 @@ bool ObjectManager::SkipPair(GameObject* obj1, GameObject* obj2)
 
 		if((et2 == EnemyType::FatFrog||et2 == EnemyType::BombFrog)&&bt1==BossType::Frog)
 			return true;
-	}
+	}*/
 
 	return false;
 }

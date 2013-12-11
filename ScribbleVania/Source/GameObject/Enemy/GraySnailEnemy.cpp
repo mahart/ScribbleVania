@@ -232,15 +232,20 @@ void GraySnailEnemy::ProcessCollision(GameObject* obj)
 
 void GraySnailEnemy::PlayerCollision(Player* obj, D3DXVECTOR3 direction)
 {
-	if(direction.x <0)
+	D3DXVECTOR3 distance, speed;
+	if(obj->GetCenter().x < GetCenter().x)
 	{
-		obj->VBounce(D3DXVECTOR3(300,-50,0));
+		distance = D3DXVECTOR3(((BoundingBox*)_bound)->Left()-(obj->GetPosition().x+obj->GetWidth())-1,-1,0);
+		speed = D3DXVECTOR3(-250,-100,0);
 	}
 	else
 	{
-		obj->VBounce(D3DXVECTOR3(-300,-50,0));
+		distance = D3DXVECTOR3(((BoundingBox*)_bound)->Right() - obj->GetPosition().x +1,-1,0);
+		speed = D3DXVECTOR3(250,-100,0);
 	}
 
+	obj->DBounce(distance);
+	obj->VBounce(speed);
 }
 
 void GraySnailEnemy::EnvironmentCollision(EnvironmentObject* obj)

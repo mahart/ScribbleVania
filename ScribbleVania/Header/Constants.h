@@ -18,8 +18,11 @@ const float MAX_RED_SNAIL_ATTACK_SPEED = 250.0f;
 const D3DXVECTOR3 ZERO_VECTOR  = D3DXVECTOR3(0,0,0);
 const float BORING_P_BASE_SPEED = 500.0f;
 
+
+const float PLAYER_SHOOT_SPEED = 0.3f;
+
 //FAT FROG
-const int FAT_FROG_HP =5;
+const int FAT_FROG_HP =10;
 const int FAT_FROG_COLS=7;
 const int FAT_FROG_WIDTH=128;
 const int FAT_FROG_HEIGHT=100;
@@ -27,9 +30,9 @@ const float FAT_FROG_ANIMATION_DELAY=0.1f;
 const int FAT_FROG_START_FRAME=0;
 const int FAT_FROG_END_FRAME=22;
 
-const int FROG_BOSS_HP = 10;
+const int FROG_BOSS_HP = 100;
 const int FROG_BOSS_THRESHOLD=5;
-
+const float FROG_BOSS_FIRE_RATE=0.5f;
 const int RED_SNAIL_HP = 3;
 const int GRAY_SNAIL_HP =5;
 
@@ -54,7 +57,7 @@ const int RED_SNAIL_ATTACK_ACCEL = 300000;
 const int GRAY_SNAIL_COLS=8;
 const int GRAY_SNAIL_WIDTH = 50;
 const int GRAY_SNAIL_HEIGHT = 44;
-const float GRAY_SNAIL_ANIMATION_DELAY = 0.2f; 
+const float GRAY_SNAIL_ANIMATION_DELAY = 0.1f; 
 const int  GRAY_SNAIL_START_FRAME_RIGHT = 0;
 const int GRAY_SNAIL_END_FRAME_RIGHT = 7;
 const int GRAY_SNAIL_START_FRAME_LEFT=8;

@@ -7,7 +7,10 @@ RedSnailEnemy::RedSnailEnemy() : Enemy()
 	_bound = new BoundingBox(0,this);
 	_fallAccel = GRAVITY;
 	_accel = RED_SNAIL_PATROL_ACCEL;
-	_dir = Direction::Right;
+	if(rand()%2==0)
+		_dir = Direction::Right;
+	else
+		_dir = Direction::Left;
 	_state=RedSnailState::Patrol;
 	_hitPoints = RED_SNAIL_HP;
 }
@@ -25,6 +28,10 @@ RedSnailEnemy::RedSnailEnemy(unsigned int ID, D3DXVECTOR3 position, Player* p) :
 	_state=RedSnailState::Patrol;
 	_player =p;
 	_hitPoints = RED_SNAIL_HP;
+	if(rand()%2==0)
+		_dir = Direction::Right;
+	else
+		_dir = Direction::Left;
 }
 
 
@@ -145,30 +152,28 @@ void RedSnailEnemy::ProcessCollision(GameObject* obj)
 
 void RedSnailEnemy::PlayerCollision(Player* obj, D3DXVECTOR3 direction)
 {
+	D3DXVECTOR3 distance, speed;
+	if(obj->GetCenter().x < GetCenter().x)
+	{
+		distance = D3DXVECTOR3(((BoundingBox*)_bound)->Left()-(obj->GetPosition().x+obj->GetWidth())-1,-1,0);
+		speed = D3DXVECTOR3(-250,-100,0);
+	}
+	else
+	{
+		distance = D3DXVECTOR3(((BoundingBox*)_bound)->Right() - obj->GetPosition().x +1,-1,0);
+		speed = D3DXVECTOR3(250,-100,0);
+	}
+
+	obj->DBounce(distance);
+	obj->VBounce(speed);
 	if(_dir == Direction::Left)
 	{
-		if(direction.x <0)
-		{
-			obj->VBounce(D3DXVECTOR3(500,-50,0));
-		}
-		else
-		{
-			obj->VBounce(D3DXVECTOR3(-100,-50,0));
-		}
 		_dir = Direction::Right;
 		objectImage.setFrames(RED_SNAIL_START_FRAME_RIGHT, RED_SNAIL_END_FRAME_RIGHT);
 		_velocity.x=0;
 	}
 	else if (_dir == Direction::Right)
 	{
-		if(direction.x >0)
-		{
-			obj->VBounce(D3DXVECTOR3(-500,-50,0));
-		}
-		else
-		{
-			obj->VBounce(D3DXVECTOR3(100,-50,0));
-		}
 		_dir = Direction::Left;
 		objectImage.setFrames(RED_SNAIL_START_FRAME_LEFT, RED_SNAIL_END_FRAME_LEFT);
 		_velocity.x=0;
