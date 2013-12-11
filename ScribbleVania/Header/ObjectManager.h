@@ -47,10 +47,18 @@ class ObjectManager
 		virtual Input* GetInput(){return _game->getInput();}
 
 		void AddObject(GameObject* obj);
+		void MakeRooms();
 		void RemoveObject(unsigned int _id);
 		Room* room1;
 		Room* room2;
 		Room* room3;
+
+		Room* Snail1;
+		Room* Snail2;
+		Room* Snail3;
+		Room* Snail4;
+		Room* SnailB;
+		Room* Frog1;
 	protected:
 		//loadroom
 		//switchroom

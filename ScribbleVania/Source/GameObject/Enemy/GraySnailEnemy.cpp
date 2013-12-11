@@ -248,6 +248,7 @@ void GraySnailEnemy::EnvironmentCollision(EnvironmentObject* obj)
 	switch(obj->GetSubType())
 	{
 		case EnvSubType::Door:
+		case EnvSubType::Ledge:
 		case EnvSubType::Wall:
 			WallCollision(obj);
 			break;

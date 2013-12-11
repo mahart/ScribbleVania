@@ -17,16 +17,26 @@ ObjectManager::ObjectManager(Game* game)
 	_game=game;
 
 	unsigned int nextID = GetNextID();
-	_player = new Player(nextID,D3DXVECTOR3(GAME_WIDTH/2,GAME_HEIGHT/2,0),this);
+	_player = new Player(nextID,D3DXVECTOR3(GAME_WIDTH/2,GAME_HEIGHT*0.2f,0),this);
 	_objects.insert(std::make_pair(nextID,_player));
 	_drawTree = new DepthTreeNode(_player->GetPosition().z, nextID);
 	_factory = new ObjectFactory(this);
 	this->room1 = _factory->MakeTestRoom1();
 	this->room2 = _factory->MakeTestRoom2();
 	this->room3 = _factory->MakeTestRoom3();
-
+	MakeRooms();
 	_treeLoaded=false;
-	LoadRoom(room1);
+	LoadRoom(Snail2);
+}
+
+
+void ObjectManager::MakeRooms()
+{
+	Snail1 =_factory->MakeS1();
+	Snail2 = _factory->MakeS2();
+	Snail3 = _factory->MakeS3();
+	Snail4 = _factory->MakeS4();
+	SnailB = _factory->MakeSB();
 }
 
 ObjectManager::~ObjectManager()

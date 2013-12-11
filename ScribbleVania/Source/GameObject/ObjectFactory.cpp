@@ -26,6 +26,205 @@ ObjectFactory::~ObjectFactory()
 {
 }
 
+Room* ObjectFactory::MakeS1()
+{
+	vector<GameObject*> * temp = new vector<GameObject*>();
+	unsigned int id = _om->GetNextID();
+	temp->push_back(new TestBackGround(id));
+
+	//Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1),EnvSubType::Floor));
+
+	//Ceiling
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, 0,1),EnvSubType::Floor));
+
+	//Left Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(0, 0,1),EnvSubType::Wall));
+
+	//Right Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(GAME_WIDTH-25, 0,1),EnvSubType::Wall));
+
+	//right door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-30.0f, 0), &_om->Snail2));
+
+	return new Room(temp);
+}
+
+
+Room* ObjectFactory::MakeS2()
+{
+	vector<GameObject*> * temp = new vector<GameObject*>();
+	unsigned int id = _om->GetNextID();
+	temp->push_back(new TestBackGround(id));
+
+	//Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1),EnvSubType::Floor));
+
+	//Ceiling
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, 0,1),EnvSubType::Floor));
+
+	//Left Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(0, 0,1),EnvSubType::Wall));
+
+	//Left Door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.9f-50, 2), D3DXVECTOR3(GAME_WIDTH-60, (GAME_HEIGHT*0.9f)-30.0f,0), &_om->Snail1));
+
+	//Right Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(GAME_WIDTH-25, 0,1),EnvSubType::Wall));
+
+	//right door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2),D3DXVECTOR3(0, GAME_HEIGHT*0.25f-50, 2), &_om->Snail3));
+
+	//Floor Over Door
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,25, GAME_WIDTH*0.2f,D3DXVECTOR3(GAME_WIDTH*0.8f, GAME_HEIGHT*0.9f-100,1),EnvSubType::Floor));
+	
+	//Door over Floor
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-150,2),D3DXVECTOR3(0, GAME_HEIGHT*0.25f-50, 2), &_om->Frog1));
+
+	id = _om->GetNextID();
+	temp->push_back( new Ledge(id,5, 24,
+		D3DXVECTOR3(GAME_WIDTH*0.8f-1, (GAME_HEIGHT*0.9f-100)+1,3)));
+
+	return new Room(temp);
+}
+
+Room* ObjectFactory::MakeS3()
+{
+	vector<GameObject*> * temp = new vector<GameObject*>();
+	unsigned int id = _om->GetNextID();
+	temp->push_back(new TestBackGround(id));
+
+	//Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1),EnvSubType::Floor));
+
+	//Ceiling
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, 0,1),EnvSubType::Floor));
+
+	//Left Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(0, 0,1),EnvSubType::Wall));
+
+	//Left Door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.25f-50, 2), D3DXVECTOR3(GAME_WIDTH-60, (GAME_HEIGHT*0.9)-50.0f,0), &_om->Snail2));
+
+	//Right Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(GAME_WIDTH-25, 0,1),EnvSubType::Wall));
+
+	//right door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.5f)-50.0f, 0), &_om->Snail4));
+
+	//Upper Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,25, GAME_WIDTH*0.85f,D3DXVECTOR3(0,GAME_HEIGHT*0.25f,1),EnvSubType::Floor));
+
+	id = _om->GetNextID();
+	temp->push_back( new Ledge(id,5, 24,
+		D3DXVECTOR3(GAME_WIDTH*0.85f-4, GAME_HEIGHT*0.25f+1,3)));
+
+	//Upper Middle Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,25, GAME_WIDTH*0.85f,D3DXVECTOR3(GAME_WIDTH*0.15f,GAME_HEIGHT*0.45f,1),EnvSubType::Floor));
+
+	id = _om->GetNextID();
+	temp->push_back( new Ledge(id,5, 24,
+		D3DXVECTOR3(GAME_WIDTH*0.15f-1, GAME_HEIGHT*0.45f,3)));
+
+	/*//Lower Middle Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,25, GAME_WIDTH*0.85f,D3DXVECTOR3(0,GAME_HEIGHT*0.65f,1),EnvSubType::Floor));
+	*/
+	//Lower Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,25, GAME_WIDTH*0.85f,D3DXVECTOR3(GAME_WIDTH*0.15f,GAME_HEIGHT*0.9f-75,1),EnvSubType::Floor));
+
+	//Left Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,(GAME_HEIGHT*0.9f-75)-(GAME_HEIGHT*0.45f), 25,D3DXVECTOR3(GAME_WIDTH*0.15f, GAME_HEIGHT*0.45f+25,1),EnvSubType::Wall));
+
+	return new Room(temp);
+}
+
+Room* ObjectFactory::MakeS4()
+{
+	vector<GameObject*> * temp = new vector<GameObject*>();
+	unsigned int id = _om->GetNextID();
+	temp->push_back(new TestBackGround(id));
+
+	//Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.5f, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.5f,1),EnvSubType::Floor));
+
+	//Ceiling
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, 0,1),EnvSubType::Floor));
+
+	//Left Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(0, 0,1),EnvSubType::Wall));
+	//Left Door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.5f-50, 2), D3DXVECTOR3(GAME_WIDTH-60, (GAME_HEIGHT*0.9f)-30.0f,0), &_om->Snail3));
+	//Right Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(GAME_WIDTH-25, 0,1),EnvSubType::Wall));
+
+	//right door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.5f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-30.0f, 0), &_om->SnailB));
+
+	return new Room(temp);
+}
+
+Room* ObjectFactory::MakeSB()
+{
+	vector<GameObject*> * temp = new vector<GameObject*>();
+	unsigned int id = _om->GetNextID();
+	temp->push_back(new TestBackGround(id));
+
+	//Floor
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, GAME_HEIGHT*0.9f,1),EnvSubType::Floor));
+
+	//Ceiling
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT*0.1f, GAME_WIDTH,D3DXVECTOR3(0, 0,1),EnvSubType::Floor));
+
+	//Left Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(0, 0,1),EnvSubType::Wall));
+	//Left Door
+	id = _om->GetNextID();
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.9f-50, 2), D3DXVECTOR3(GAME_WIDTH-60, (GAME_HEIGHT*0.5f)-50.0f,0), &_om->Snail4));
+	//Right Wall
+	id = _om->GetNextID();
+	temp->push_back(new TestBarrier(id,GAME_HEIGHT, 25,D3DXVECTOR3(GAME_WIDTH-25, 0,1),EnvSubType::Wall));
+
+		
+	//SnailBoss
+	id = _om->GetNextID();
+	temp->push_back(new SnailBoss(id,(Player*)_om->GetObjectByID(0)));
+	return new Room(temp);
+}
+
+
 Room* ObjectFactory::MakeTestRoom1()
 {
 	vector<GameObject*> * temp = new vector<GameObject*>();
@@ -49,7 +248,7 @@ Room* ObjectFactory::MakeTestRoom1()
 
 	//Left Door
 	id = _om->GetNextID();
-	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.9f-50, 2), D3DXVECTOR3(GAME_WIDTH-60, (GAME_HEIGHT*0.9f)-30.0f,0), &_om->room3));
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.9f-50, 2), D3DXVECTOR3(GAME_WIDTH-60, (GAME_HEIGHT*0.9f)-50.0f,0), &_om->room3));
 
 	//Right Wall
 	id = _om->GetNextID();
@@ -57,12 +256,8 @@ Room* ObjectFactory::MakeTestRoom1()
 
 	//right door
 	id = _om->GetNextID();
-	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-30.0f, 0), &_om->room2));
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-50.0f, 0), &_om->room2));
 
-	
-	//SnailBoss
-	//id = _om->GetNextID();
-	//temp->push_back(new SnailBoss(id,(Player*)_om->GetObjectByID(0)));
 	
 
 	//Gray Snail
@@ -104,7 +299,7 @@ Room* ObjectFactory::MakeTestRoom2()
 	
 	//Left Door
 	id = _om->GetNextID();
-	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.9f-50, 2), D3DXVECTOR3(GAME_WIDTH-60,  (GAME_HEIGHT*0.9f)-30.0f,0), &_om->room1));
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(0, GAME_HEIGHT*0.9f-50, 2), D3DXVECTOR3(GAME_WIDTH-60,  (GAME_HEIGHT*0.9f)-50.0f,0), &_om->room1));
 
 	//right wall
 	id=_om->GetNextID();
@@ -112,7 +307,7 @@ Room* ObjectFactory::MakeTestRoom2()
 
 	//right door
 	id = _om->GetNextID();
-	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-30.0f, 0), &_om->room3));
+	temp->push_back(new Door(id, 26,50, D3DXVECTOR3(GAME_WIDTH-26, GAME_HEIGHT*0.9f-50,2), D3DXVECTOR3(30,  (GAME_HEIGHT*0.9f)-50.0f, 0), &_om->room3));
 
 	//Platform
 	id = _om->GetNextID();

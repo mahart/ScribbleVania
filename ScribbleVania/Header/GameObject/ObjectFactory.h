@@ -9,9 +9,17 @@ public:
 	ObjectFactory(ObjectManager* om);
 	~ObjectFactory();
 
+	Room* MakeS1();
+	Room* MakeS2();
+	Room* MakeS3();
+	Room* MakeS4();
+	Room* MakeSB();
+
 	Room* MakeTestRoom1();
 	Room* MakeTestRoom2();
 	Room* MakeTestRoom3();
+
+	
 private:
 	ObjectManager* _om;
 };
